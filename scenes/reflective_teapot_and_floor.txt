@@ -1,0 +1,136 @@
+
+PerspectiveCamera {
+   center 0 2 16
+   direction 0 -0.1 -1
+   up 0 1 0
+   angle 30
+}
+
+Lights {
+   numLights 1
+   DirectionalLight {
+      direction 0.5 -1 0
+      color 0.9 0.9 0.9 
+   }
+}
+
+Background {
+   color 0.2 0.1 0.6
+   ambientLight 0.2 0.2 0.2 
+}
+
+Materials {
+   numMaterials 7
+
+   PhongMaterial {
+      diffuseColor 0.1 0.1 0.1
+      specularColor 1 1 1
+      exponent 64
+      transparentColor 0 0 0	
+      reflectiveColor 0.9 0.9 0.9
+      indexOfRefraction 1
+      blur 0.5
+   }
+
+    PhongMaterial {
+        diffuseColor 1 0.1 0.1
+	specularColor 1 1 1
+	exponent 50
+	transparentColor 0 0 0	
+	reflectiveColor 0.9 0.1 0.1
+	indexOfRefraction 1
+    }
+
+    PhongMaterial {
+        diffuseColor 0.1 1 0.1
+	specularColor 1 1 1
+	exponent 50
+	transparentColor 0 0 0	
+	reflectiveColor 0.1 0.9 0.1
+	indexOfRefraction 1
+    }
+
+    PhongMaterial {
+        diffuseColor 0.1 0.1 1
+	specularColor 1 1 1
+	exponent 50
+	transparentColor 0 0 0	
+	reflectiveColor 0.1 0.1 0.9
+	indexOfRefraction 1
+    }
+
+    PhongMaterial {
+        diffuseColor 1 0.1 1
+	specularColor 1 1 1
+	exponent 50
+	transparentColor 0 0 0	
+	reflectiveColor 0.9 0.1 0.9
+	indexOfRefraction 1
+    }
+
+    PhongMaterial {
+        diffuseColor 1 1 0.1
+	specularColor 1 1 1
+	exponent 50
+	transparentColor 0 0 0	
+	reflectiveColor 0.9 0.9 0.1
+	indexOfRefraction 1
+    }
+
+    PhongMaterial {
+        diffuseColor 0.5 0.5 0.5
+	specularColor 1 1 1
+	exponent 50
+	transparentColor 0 0 0	
+	reflectiveColor 0.5 0.5 0.5
+	indexOfRefraction 1
+    }
+}
+
+Group {
+   numObjects 7
+
+   MaterialIndex 0
+   Transform {
+      Translate  0 -1 0
+      TriangleMesh {
+         obj_file teapot.obj
+      }
+   }
+
+   MaterialIndex 1
+   Sphere {
+      center -2 -0.4 4
+      radius 0.6
+   }
+
+   MaterialIndex 2
+   Sphere {
+      center -0.8 -0.5 3.5
+      radius 0.5
+   }
+
+   MaterialIndex 3
+   Sphere {
+      center 1 -0.8 3
+      radius 0.2
+   }
+
+   MaterialIndex 4
+   Sphere {
+      center 1.5 -0.8 4.2
+      radius 0.2
+   }
+
+   MaterialIndex 5
+   Sphere {
+      center -1.6 -0.8 4.7
+      radius 0.2
+   }
+
+   MaterialIndex 6
+   Plane {
+      normal 0 1 0
+      offset -1
+   }
+}
