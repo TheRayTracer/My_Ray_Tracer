@@ -21,8 +21,8 @@ Scene::Scene(const char* szFileName)
 {
    group = NULL;
    camera = NULL;
-   background_color_begin = background_color_end = vector3f(0.5f, 0.5f, 0.5f);
-   ambient_light = vector3f(0.0f, 0.0f, 0.0f);
+   background = vector3f(0.5f, 0.5f, 0.5f);
+   ambient_light = vector3f(1.0f, 1.0f, 1.0f);
    num_lights = 0;
  
    for (size_t i = 0; i < SIZE; ++i)
@@ -52,13 +52,6 @@ Scene::Scene(const char* szFileName)
    }
 
    file = NULL;
-
-/* If no lights are specified, set ambient light to white 
-   (do solid color ray casting). */
-   if (num_lights == 0)
-   {
-      ambient_light = vector3f(1.0f, 1.0f, 1.0f);
-   }
 }
 
 Scene::~Scene()
@@ -113,10 +106,6 @@ void Scene::ParseFile()
       else if (strcmp(token, "Group") == 0)
       {
          group = ParseGroup();
-      }
-      else if (strcmp(token, "CSGGroup") == 0)
-      {
-         group = ParseCSGGroup();
       }
    }
 
@@ -255,31 +244,13 @@ void Scene::ParseBackground()
 
    GetToken(token); assert(strcmp(token, "{") == 0);  
 
-   for (;;)
-   {
-      GetToken(token); 
+   GetToken(token); assert(strcmp(token, "color") == 0);
       
-      if (strcmp(token, "}") == 0)
-      { 
-         break;
-      }
-      else if (strcmp(token, "color") == 0)
-      {
-         background_color_begin = background_color_end = ReadVector3f();
-      }
-      else if (strcmp(token, "color_begin") == 0)
-      {
-         background_color_begin = ReadVector3f();
-      }
-      else if (strcmp(token, "color_end") == 0)
-      {
-         background_color_end = ReadVector3f();
-      }
-      else if (strcmp(token, "ambientLight") == 0)
-      {
-         ambient_light = ReadVector3f();
-      }
-   }
+   background = ReadVector3f();
+
+   GetToken(token); assert(strcmp(token, "ambientLight") == 0);
+
+   ambient_light = ReadVector3f();
 
    return;
 }
@@ -344,16 +315,15 @@ Light* Scene::ParsePointLight()
 
    GetToken(token); assert(strcmp(token, "color") == 0);
    vector3f color = ReadVector3f();
-   float att[3] = { 1.0f, 0.0f, 0.0f };
-   
-   GetToken(token); 
-   
+   vector3f att(1.0f, 0.0f, 0.0f);
+
+   GetToken(token);
+
    if (strcmp(token, "attenuation") == 0)
    {
-      att[0] = ReadFloat();
-      att[1] = ReadFloat();
-      att[2] = ReadFloat();
-      GetToken(token); 
+      att = ReadVector3f();
+
+      GetToken(token);
    }
 
    assert(strcmp(token, "}") == 0);
@@ -371,15 +341,14 @@ Light* Scene::ParseSoftLight()
 
    GetToken(token); assert(strcmp(token, "color") == 0);
    vector3f color = ReadVector3f();
-   float att[3] = { 1.0f, 0.0f, 0.0f };
+   vector3f att(1.0f, 0.0f, 0.0f);
    
    GetToken(token); 
    
    if (strcmp(token, "attenuation") == 0)
    {
-      att[0] = ReadFloat();
-      att[1] = ReadFloat();
-      att[2] = ReadFloat();
+      att = ReadVector3f();
+
       GetToken(token); 
    }
 
@@ -885,6 +854,10 @@ Object* Scene::ParseObject(char token[MAX_PARSER_TOKEN_LENGTH])
    {
       object = ParseGroup();
    }
+   else if (strcmp(token, "CSGPair") == 0)
+   {
+      object = ParseCSGPair();
+   }
    else if (strcmp(token, "Sphere") == 0)
    {
       object = ParseSphere();
@@ -970,62 +943,75 @@ Group* Scene::ParseGroup()
    
    GetToken(token); assert(strcmp(token, "}") == 0);
 
-//   result->SetBB(vector3f(FLT_MAX, FLT_MAX, FLT_MAX), vector3f(-FLT_MAX, -FLT_MAX, -FLT_MAX));
-
    return result;
 }
 
-CSGGroup* Scene::ParseCSGGroup()
+CSGPair* Scene::ParseCSGPair()
 {
    char token[MAX_PARSER_TOKEN_LENGTH];
 
    GetToken(token); assert(strcmp(token, "{") == 0);
 
-   GetToken(token); assert(strcmp(token, "numObjects") == 0);
-   int num_objects = ReadInt();
+   CSGPair::Type t = CSGPair::Union;
+   Solid* a = NULL, * b = NULL;
 
-   assert(num_objects > 1);
-
-   GetToken(token); assert(strcmp(token, "type") == 0);
-
-   GetToken(token);
-
-   CSGGroup* result = NULL;
-
-   if (strcmp(token, "Intersection") == 0)
-   {
-      result = new CSGGroup(num_objects, CSGGroup::Intersection);
-   }
-   else if (strcmp(token, "Difference") == 0)
-   {
-      result = new CSGGroup(num_objects, CSGGroup::Difference);
-   }
-   else
-   {
-      result = new CSGGroup(num_objects);
-   }
-
-   int count = 0;
-   while (num_objects > count)
+   for (;;)
    {
       GetToken(token);
 
-      if (strcmp(token, "MaterialIndex") == 0)
+      if (strcmp(token, "}") == 0)
+      {
+         break;
+      }
+      else if (strcmp(token, "type") == 0)
+      {
+         GetToken(token);
+
+         if (strcmp(token, "Intersection") == 0)
+         {
+            t = CSGPair::Intersection;
+         }
+         else if (strcmp(token, "Difference") == 0)
+         {
+            t = CSGPair::Difference;
+         }
+      }
+      else if (strcmp(token, "MaterialIndex") == 0)
       {
          int index = ReadInt();
          assert(index >= 0 && index <= GetNumMaterials());
          current_material = GetMaterial(index);
       }
-      else
+      else if (strcmp(token, "Cube") == 0)
       {
-         Object* object = ParseObject(token);
-         assert(object != NULL);
-         result->SetAt(count, object);
-         count++;
+         if (a == NULL)
+         {
+            a = ParseCube();
+            assert(a != NULL);
+         }
+         else if (b == NULL)
+         {
+            b = ParseCube();
+            assert(b != NULL);
+         }
+      }
+      else if (strcmp(token, "Sphere") == 0)
+      {
+         if (a == NULL)
+         {
+            a = ParseSphere();
+            assert(a != NULL);
+         }
+         else if (b == NULL)
+         {
+            b = ParseSphere();
+            assert(b != NULL);
+         }
       }
    }
 
-   GetToken(token); assert(strcmp(token, "}") == 0);
+   CSGPair* result = new CSGPair(a, b);
+   result->SetType(t);
 
    return result;
 }
@@ -1377,7 +1363,7 @@ bool Scene::GetToken(char token[MAX_PARSER_TOKEN_LENGTH])
       token[0] = '\0';
    }
 
-   return token[0] != '\0';
+   return success != EOF;
 }
 
 vector3f Scene::ReadVector3f()

@@ -106,7 +106,7 @@ public:
       d = position - p;
       float distance_to_center = d.Length();
 
-      vector3f random(((rand() / (float) RAND_MAX) - 0.5f), ((rand() / (float) RAND_MAX) - 0.5f), ((rand() / (float) RAND_MAX) - 0.5f));
+      vector3f random(random_float() - 0.5f, random_float() - 0.5f, random_float() - 0.5f);
 
       d = (position + random) - p;
 

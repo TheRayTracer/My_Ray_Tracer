@@ -20,8 +20,9 @@ class MarbleMaterial;
 class WoodMaterial;
 class Checkerboard;
 class Object;
+class Solid;
 class Group;
-class CSGGroup;
+class CSGPair;
 class Sphere;
 class MotionSphere;
 class Plane;
@@ -39,18 +40,8 @@ public:
    Scene(const char* szFileName);
    ~Scene();
 
-   Camera*   GetCamera()          const {   return camera;             }
-   vector3f  GetBackgroundColor(float v = 1.0f) const
-   {
-      if (v < 0.0f) v = 0.0f;
-      else if (v > 1.0f) v = 1.0f;
-
-      float t = 0.5f * (v + 1.0f);
-
-      vector3f color = ((1.0f - t) * background_color_begin) + (t * background_color_end);
-
-      return color;
-   }
+   Camera*   GetCamera()           const {   return camera;             }
+   vector3f  GetBackgroundColor()  const {   return background;         }
    vector3f  GetAmbientLight()     const {   return ambient_light;      }
    int       GetNumLights()        const {   return num_lights;         }
    Light*    GetLight(size_t i)    const {   assert(i < num_lights);   return light[i];   }
@@ -80,7 +71,7 @@ private:
    Checkerboard*   ParseCheckerboard(int count);
    Object*       ParseObject(char token[MAX_PARSER_TOKEN_LENGTH]);
    Group*        ParseGroup();
-   CSGGroup*     ParseCSGGroup();
+   CSGPair*      ParseCSGPair();
    Sphere*       ParseSphere();
    MotionSphere* ParseMotionSphere();
    Plane*        ParsePlane();
@@ -101,7 +92,7 @@ private:
    FILE* file;
 
    Camera* camera;
-   vector3f background_color_begin, background_color_end;
+   vector3f background;
 
    size_t num_lights;
    vector3f ambient_light;

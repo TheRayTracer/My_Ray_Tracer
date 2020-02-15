@@ -16,8 +16,7 @@ Lights {
 }
 
 Background {
-   color_end 0.2 0 0.6
-   color_begin 1 1 1
+   color 0.2 0 0.6
    ambientLight 0.1 0.1 0.1 
 }
 
@@ -43,13 +42,13 @@ Materials {
 
     PhongMaterial {
         diffuseColor 0.5 0.2 0.1
-        specularColor 0.6 0.6 0.6
+        specularColor 0.1 0.1 0.1
 	exponent 32
     }
 
     PhongMaterial {
         diffuseColor 1 0.8 0.8
-        specularColor 0.6 0.6 0.6
+        specularColor 0.1 0.1 0.1
 	exponent 32
     }
 
@@ -66,7 +65,7 @@ Materials {
 
     PhongMaterial {
         diffuseColor 0 0 0
-        specularColor 0.6 0.6 0.6
+        specularColor 0.1 0.1 0.1
 	exponent 32
     }
 

@@ -125,8 +125,7 @@ Materials {
 }
 
 Background {
-    color_end 0.2 0.2 0.2
-    color_begin 1 1 1
+    color 0.2 0.2 0.2
     ambientLight 0.2 0.2 0.2
 }
 

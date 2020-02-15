@@ -191,6 +191,47 @@ struct vector3f
    {
       return a[x] * b[x] + a[y] * b[y] + a[z] * b[z];
    }
+
+   static vector3f random_vector_from_unit_sphere()
+   {
+      vector3f p;
+
+      do
+      {
+         p = 2.0f * vector3f(random_float(), random_float(), random_float()) - vector3f(1.0f, 1.0f, 1.0f);
+      } while ((p[x] * p[x] + p[y] * p[y] + p[z] * p[z]) >= 1.0f);
+
+      return p;
+   }
+
+   static void ConstructBasisFromSingleVector(const vector3f& a, vector3f& w, vector3f& u, vector3f& v)
+   {
+      w = a;
+      w.Normalize();
+
+      vector3f t = w;
+
+      if (fabs(t[x]) < fabs(t[y]) && fabs(t[x]) < fabs(t[z]))
+      {
+         t[x] = 1.0f;
+      }
+      else if (fabs(t[y]) < fabs(t[x]) && fabs(t[y]) < fabs(t[z]))
+      {
+         t[y] = 1.0f;
+      }
+      else if (fabs(t[z]) < fabs(t[y]) && fabs(t[z]) < fabs(t[x]))
+      {
+         t[z] = 1.0f;
+      }
+
+      u = vector3f::Cross(t, w);
+      u.Normalize();
+
+      v = vector3f::Cross(w, u);
+   // v.Normalize();
+
+      return;
+   }
 };
 
 struct vector2f

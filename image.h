@@ -14,7 +14,7 @@
 class Image
 {
 public:
-   Image(int size);
+   Image(int width, int height);
    Image(const Image& i);
    ~Image();
 

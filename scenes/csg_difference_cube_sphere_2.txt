@@ -15,7 +15,11 @@ Lights {
 }
 
 Materials {
-   numMaterials 2
+   numMaterials 3
+
+    PhongMaterial {
+        diffuseColor 0.6 0.6 0.6
+    }
 
    PhongMaterial {
       diffuseColor 0.1 0.1 0.8
@@ -31,7 +35,7 @@ Materials {
 	   specularColor 1 1 1
 	   exponent 50
 	   transparentColor 0 0 0	
-	   reflectiveColor 0.9 0.1 0.1
+	   reflectiveColor 0.1 0.1 0.1
 	   indexOfRefraction 1
     }
 }
@@ -41,19 +45,28 @@ Background {
     ambientLight 0.2 0.2 0.2
 }
 
-CSGGroup {
-   numObjects 2
-   type Difference
+Group {
+    numObjects 2
 
-   MaterialIndex 0
-   Cube {
-      center 0 0 0
-      size 2
-   }
+    MaterialIndex 0
+    Plane {
+        normal 0 1 0
+        offset -2
+    } 
 
-   MaterialIndex 1
-   Sphere {
-      center 1 1 -1
-      radius 1
-   }
+    CSGPair {
+       type Difference
+
+       MaterialIndex 1
+       Cube {
+          center 0 0 0
+          size 2
+       }
+
+       MaterialIndex 2
+       Sphere {
+          center 1 1 -1
+          radius 1
+       }
+    }
 }

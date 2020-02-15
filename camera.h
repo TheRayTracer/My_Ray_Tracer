@@ -12,7 +12,6 @@ class Camera
 {
 public:
    virtual Ray GenerateRay(const vector2f& point) const = 0;
-   virtual float GetTMin() const = 0;
    virtual bool UseSamples() const = 0;
 
    static vector3f LookAt(const vector3f& eye, const vector3f& look_at)
@@ -49,11 +48,6 @@ public:
       Ray ray(origin, direction);
 
       return ray;
-   }
-
-   virtual float GetTMin() const
-   {
-      return FLT_MIN; /* From float.h. */
    }
 
    virtual bool UseSamples() const
@@ -103,11 +97,6 @@ public:
       return ray;
    }
 
-   virtual float GetTMin() const
-   {
-      return FLT_MIN; /* From float.h. */
-   }
-
    virtual bool UseSamples() const
    {
       return false;
@@ -153,11 +142,6 @@ public:
       Ray ray(eye, d.Normalize());
 
       return ray;
-   }
-
-   virtual float GetTMin() const
-   {
-      return FLT_MIN; /* From float.h. */
    }
 
    virtual bool UseSamples() const

@@ -11,13 +11,14 @@
 #include <stdlib.h>
 #include <assert.h>
 
-Image::Image(int size) : w(size), h(size), data(NULL)
+Image::Image(int width, int height) : w(width), h(height), data(NULL)
 {
-   data = new vector3f[w * h];
+   int size = w * h;
+   data = new vector3f[size];
 
    vector3f white(1.0f, 1.0f, 1.0f);
 
-   for (int i = 0; i < w * h; ++i)
+   for (int i = 0; i < size; ++i)
    {
       data[i] = white;
    }
@@ -28,8 +29,8 @@ Image::Image(const Image& i)
    w = i.w;
    h = i.w;
 
-   data = new vector3f[w * h];
    int size = w * h;
+   data = new vector3f[size];
 
    for (int j = 0; j < size; ++j)
    {
@@ -124,7 +125,7 @@ void Image::SaveTGA(const char* szFileName) const
    if (file != NULL)
    {
    /* Header information. */
-      for (int i = 0; i < 18; i++)
+      for (int i = 0; i < 18; ++i)
       {
          if (i == 2) WriteByte(file, 2);
          else if (i == 12) WriteByte(file, static_cast<unsigned char>(w % 256));
@@ -137,11 +138,11 @@ void Image::SaveTGA(const char* szFileName) const
       }
 
    /* Write the image data. */
-      for (int y = h - 1; y >= 0; --y)
+      for (int j = h - 1; j >= 0; --j)
       {
-         for (int x = 0; x < w; ++x)
+         for (int i = 0; i < w; ++i)
          {
-            vector3f v = GetPixel(x, y);
+            vector3f v = GetPixel(i, j);
             WriteByte(file, ClampColorComponent(v[b]));
             WriteByte(file, ClampColorComponent(v[g]));
             WriteByte(file, ClampColorComponent(v[r]));
@@ -166,29 +167,36 @@ void Image::SaveBMP(const char* szFileName) const
              bmpHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
              bmpHeader.bfType    = BITMAP_ID; /* The magic number.  */
 
+      int pad = (4 - (w * 3) % 4) % 4;
+
       BITMAPINFOHEADER bmpInfomation = {0}; /* Bitmap infomation header. */
-       bmpInfomation.biSize          = sizeof(BITMAPINFOHEADER);
-       bmpInfomation.biPlanes        = 1;  /* The only supported value. */
-       bmpInfomation.biBitCount      = 24;
-       bmpInfomation.biCompression   = BI_RGB;
-       bmpInfomation.biWidth         = w;
-       bmpInfomation.biHeight        = w;
-       bmpInfomation.biSizeImage     = w * w * 3;
-       bmpInfomation.biXPelsPerMeter = 2834; // 72
-       bmpInfomation.biYPelsPerMeter = 2834; // 72
+      bmpInfomation.biSize          = sizeof(BITMAPINFOHEADER);
+      bmpInfomation.biPlanes        = 1;  /* The only supported value. */
+      bmpInfomation.biBitCount      = 24;
+      bmpInfomation.biCompression   = BI_RGB;
+      bmpInfomation.biWidth         = w;
+      bmpInfomation.biHeight        = h;
+      bmpInfomation.biSizeImage     = ((w * 3) + pad) * h;
+      bmpInfomation.biXPelsPerMeter = 2834;
+      bmpInfomation.biYPelsPerMeter = 2834;
 
       fwrite(&bmpHeader,     sizeof(BITMAPFILEHEADER), 1, file);
       fwrite(&bmpInfomation, sizeof(BITMAPINFOHEADER), 1, file);
 
    /* Write the image data upside-down. */
-      for (int y = 0; y < h; ++y)
+      for (int j = 0; j < h; ++j)
       {
-         for (int x = 0; x < w; ++x)
+         for (int i = 0; i < w; ++i)
          {
-            vector3f v = GetPixel(x, y);
+            vector3f v = GetPixel(i, j);
             WriteByte(file, ClampColorComponent(v[b]));
             WriteByte(file, ClampColorComponent(v[g]));
             WriteByte(file, ClampColorComponent(v[r]));
+         }
+
+         for (int i = 0; i < pad; ++i)
+         {
+            WriteByte(file, 0);
          }
       }
       

@@ -14,7 +14,6 @@ class Object
 {
 public:
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const = 0;
-   virtual bool Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const= 0;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const = 0;
 
 protected:
@@ -23,7 +22,13 @@ protected:
 private:
 };
 
-class Sphere : public Object
+class Solid : public Object
+{
+public:
+   virtual bool Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const = 0;
+};
+
+class Sphere : public Solid
 {
 public:
    Sphere(const vector3f& p, float r, Material* m);
@@ -57,7 +62,6 @@ public:
    Plane(const vector3f& n, float offset, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
-   virtual bool Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
 
 protected:
@@ -72,7 +76,6 @@ public:
    Triangle(const vector3f& a, const vector3f& b, const vector3f& c, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
-   virtual bool Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
 
 protected:
@@ -87,7 +90,6 @@ public:
    XYRectangle(const vector2f low, const vector2f up, const float _k, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
-   virtual bool Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
 
 protected:
@@ -103,7 +105,6 @@ public:
    XZRectangle(const vector2f low, const vector2f up, const float _k, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
-   virtual bool Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
 
 protected:
@@ -119,7 +120,6 @@ public:
    YZRectangle(const vector2f low, const vector2f up, const float _k, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
-   virtual bool Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
 
 protected:
@@ -129,7 +129,7 @@ private:
    vector3f normal;
 };
 
-class Cube : public Object
+class Cube : public Solid
 {
 public:
    Cube(const vector3f& p, float size, Material* m);
@@ -151,7 +151,6 @@ public:
    ~Group();
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
-   virtual bool Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
 
    void SetAt(size_t i, Object* obj);
@@ -160,28 +159,33 @@ public:
    void SetBB(const vector3f& vmin, const vector3f& vmax);
 
 protected:
+private:
+   bool PossibleHit(const Ray& ray, float tmin) const;
+
    size_t size;
    Object** object;
 
-private:
-   bool PossibleHit(const Ray& ray, float tmin) const;
    vector3f bb_vmin, bb_vmax;
 };
 
-class CSGGroup : public Group
+class CSGPair : public Object
 {
 public:
    enum Type { Union, Intersection, Difference };
 
-   CSGGroup(int s, Type t = Type::Union);
-   ~CSGGroup();
+   CSGPair(Solid* sa, Solid* sb);
+   ~CSGPair();
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
+   virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
+
    void SetType(Type t) { type = t;   return; };
 
 protected:
 private:
    Type type;
+
+   Solid* a, *b;
 };
 
 class Transform : public Object

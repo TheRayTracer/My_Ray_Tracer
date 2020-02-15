@@ -172,11 +172,6 @@ bool Plane::Intersect(const Ray& ray, Hit& h, float tmin) const
    return result;
 }
 
-bool Plane::Intersect(const Ray& ray, Hit& h1, Hit&, float tmin) const
-{
-   return Intersect(ray, h1, tmin);
-}
-
 bool Plane::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
 {
    return Intersect(ray, h, tmin);
@@ -231,11 +226,6 @@ bool Triangle::Intersect(const Ray& ray, Hit& h, float tmin) const
    return result;
 }
 
-bool Triangle::Intersect(const Ray& ray, Hit& h1, Hit&, float tmin) const
-{
-   return Intersect(ray, h1, tmin);
-}
-
 bool Triangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
 {
    return Intersect(ray, h, tmin);
@@ -275,11 +265,6 @@ bool XYRectangle::Intersect(const Ray& ray, Hit& h, float tmin) const
    }
 
    return result;
-}
-
-bool XYRectangle::Intersect(const Ray& ray, Hit& h1, Hit&, float tmin) const
-{
-   return Intersect(ray, h1, tmin);
 }
 
 bool XYRectangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
@@ -323,11 +308,6 @@ bool XZRectangle::Intersect(const Ray& ray, Hit& h, float tmin) const
    return result;
 }
 
-bool XZRectangle::Intersect(const Ray& ray, Hit& h1, Hit&, float tmin) const
-{
-   return Intersect(ray, h1, tmin);
-}
-
 bool XZRectangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
 {
    return Intersect(ray, h, tmin);
@@ -367,11 +347,6 @@ bool YZRectangle::Intersect(const Ray& ray, Hit& h, float tmin) const
    }
 
    return result;
-}
-
-bool YZRectangle::Intersect(const Ray& ray, Hit& h1, Hit&, float tmin) const
-{
-   return Intersect(ray, h1, tmin);
 }
 
 bool YZRectangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
@@ -683,11 +658,6 @@ bool Group::Intersect(const Ray& ray, Hit& h, float tmin) const
    return result;
 }
 
-bool Group::Intersect(const Ray& ray, Hit& h1, Hit&, float tmin) const
-{
-   return Intersect(ray, h1, tmin);
-}
-
 bool Group::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
 {
    bool result = false;
@@ -787,47 +757,35 @@ bool Group::PossibleHit(const Ray& ray, float tmin) const
    return result;
 }
 
-CSGGroup::CSGGroup(int s, Type t) : Group(s), type(t)
+CSGPair::CSGPair(Solid* sa, Solid* sb) : a(sa), b(sb), type(Type::Union)
 {
-   object = new Object*[size];
-
-   for (size_t i = 0; i < size; ++i)
-   {
-      object[i] = NULL;
-   }
 }
 
-CSGGroup::~CSGGroup()
+CSGPair::~CSGPair()
 {
-   for (size_t i = 0; i < size; ++i)
-   {
-      delete object[i];
-   }
-
-   delete[] object;
+   delete a;
+   delete b;
 }
 
-bool CSGGroup::Intersect(const Ray& ray, Hit& h, float tmin) const
+bool CSGPair::Intersect(const Ray& ray, Hit& h, float tmin) const
 {
    bool result = false;
 
-   if (type == Difference && size == 2)
+   if (type == Difference)
    {
       Hit h1_min, h1_max, h2_min, h2_max;
 
-      result = object[0]->Intersect(ray, h1_min, h1_max, tmin);
+      result = a->Intersect(ray, h1_min, h1_max, tmin);
 
       if (result != false)
       {
-         h.Set(h1_min.GetT(), h1_min.GetMaterial(), h1_min.GetNormal(), ray);
-
-         bool h2 = object[1]->Intersect(ray, h2_min, h2_max, tmin);
+         bool h2 = b->Intersect(ray, h2_min, h2_max, tmin);
 
          if (h2 != false)
          {
             if (h1_min.GetT() < h2_min.GetT())
             {
-
+               h.Set(h1_min.GetT(), h1_min.GetMaterial(), h1_min.GetNormal(), ray);
             }
             else if (h2_max.GetT() < h1_max.GetT())
             {
@@ -835,23 +793,31 @@ bool CSGGroup::Intersect(const Ray& ray, Hit& h, float tmin) const
                {
                   h.Set(h2_max.GetT(), h2_max.GetMaterial(), h2_max.GetNormal().Negate(), ray);
                }
+               else
+               {
+                  h.Set(h1_min.GetT(), h1_min.GetMaterial(), h1_min.GetNormal(), ray);
+               }
             }
             else
             {
                result = false;
             }
          }
+         else
+         {
+            h.Set(h1_min.GetT(), h1_min.GetMaterial(), h1_min.GetNormal(), ray);
+         }
       }
    }
-   else if (type == Intersection && size == 2)
+   else if (type == Intersection)
    {
       Hit h1_min, h1_max, h2_min, h2_max;
 
-      result = object[0]->Intersect(ray, h1_min, h1_max, tmin);
+      result = a->Intersect(ray, h1_min, h1_max, tmin);
 
       if (result != false)
       {
-         bool h2 = object[1]->Intersect(ray, h2_min, h2_max, tmin);
+         bool h2 = b->Intersect(ray, h2_min, h2_max, tmin);
 
          if (h2 != false)
          {
@@ -875,16 +841,25 @@ bool CSGGroup::Intersect(const Ray& ray, Hit& h, float tmin) const
    }
    else if (type == Union)
    {
-      for (size_t i = 0; i < size; ++i)
+      Hit h1_max;
+      if (a->Intersect(ray, h, h1_max, tmin) != false)
       {
-         if (object[i]->Intersect(ray, h, tmin) != false)
-         {
-            result = true;
-         }
+         result = true;
+      }
+
+      Hit h2_max;
+      if (b->Intersect(ray, h, h2_max, tmin) != false)
+      {
+         result = true;
       }
    }
 
    return result;
+}
+
+bool CSGPair::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
+{
+   return Intersect(ray, h, tmin);
 }
 
 Transform::Transform(const Matrix& m, Object* o) : matrix(m), object(o) { }

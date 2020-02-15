@@ -8,10 +8,12 @@ PerspectiveCamera {
 
 Lights {
     numLights 2
+
     DirectionalLight {
         direction -0.4 -1 -0.5
         color 0.6 0.6 0.6
     }
+
     DirectionalLight {
         direction 0.4 -1 -0.5
         color 0.3 0.3 0.3 
@@ -40,7 +42,6 @@ Materials {
 
     PhongMaterial {
         diffuseColor 0.79 0.66 0.44
-	reflectiveColor 0.3 0.3 0.3
     }
 
     Wood {
@@ -62,7 +63,6 @@ Materials {
 
     PhongMaterial {
         diffuseColor 0.69 0.56 0.34
-	reflectiveColor 0.3 0.3 0.3
     }
 
     Wood {
