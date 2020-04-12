@@ -28,6 +28,7 @@ class MotionSphere;
 class Plane;
 class Cube;
 class Triangle;
+class Cone;
 class XYRectangle;
 class XZRectangle;
 class YZRectangle;
@@ -76,6 +77,7 @@ private:
    MotionSphere* ParseMotionSphere();
    Plane*        ParsePlane();
    Triangle*     ParseTriangle();
+   Cone*         ParseCone();
    XYRectangle*  ParseXYRectangle();
    XZRectangle*  ParseXZRectangle();
    YZRectangle*  ParseYZRectangle();

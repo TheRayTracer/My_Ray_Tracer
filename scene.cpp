@@ -875,6 +875,10 @@ Object* Scene::ParseObject(char token[MAX_PARSER_TOKEN_LENGTH])
    {
       object = ParseTriangle();
    }
+   else if (strcmp(token, "Cone") == 0)
+   {
+      object = ParseCone();
+   }
    else if (strcmp(token, "XYRectangle") == 0)
    {
       object = ParseXYRectangle();
@@ -1092,6 +1096,30 @@ Triangle* Scene::ParseTriangle()
    assert(current_material != NULL);
 
    return new Triangle(v0, v1, v2, current_material);
+}
+
+Cone* Scene::ParseCone()
+{
+   char token[MAX_PARSER_TOKEN_LENGTH];
+
+   GetToken(token); assert(strcmp(token, "{") == 0);
+   GetToken(token); assert(strcmp(token, "tip") == 0);
+   vector3f v = ReadVector3f();
+
+   GetToken(token); assert(strcmp(token, "axis") == 0);
+   vector3f axis = ReadVector3f();
+
+   GetToken(token); assert(strcmp(token, "angle") == 0);
+   float a = ReadFloat();
+   a = (float) cos(DegreesToRadians(a));
+
+   GetToken(token); assert(strcmp(token, "height") == 0);
+   float h = ReadFloat();
+
+   GetToken(token); assert(strcmp(token, "}") == 0);
+   assert(current_material != NULL);
+
+   return new Cone(v, axis, a, h, current_material);
 }
 
 XYRectangle* Scene::ParseXYRectangle()
