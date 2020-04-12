@@ -84,6 +84,20 @@ private:
    vector3f normal;
 };
 
+class Cone : public Object
+{
+public:
+   Cone(const vector3f& tip, const vector3f& ax, const float cos2a, const float h, Material* m);
+
+   virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
+   virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
+
+protected:
+private:
+   vector3f v, axis;
+   float cos2_angle_sq, height;
+};
+
 class XYRectangle : public Object
 {
 public:

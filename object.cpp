@@ -32,7 +32,6 @@ bool Sphere::Intersect(const Ray& ray, Hit& h, float tmin) const
       if (t1 > tmin && t1 < h.GetT())
       {
          vector3f n = ray.PointAtParameter(t1) - point;
-      // vector3f n = p / p.Length();
          
       // h.intersection_point = ray.GetOrigin() + t1 * ray.GetDirection() - point;
          h.Set(t1, material, n, ray);
@@ -41,7 +40,6 @@ bool Sphere::Intersect(const Ray& ray, Hit& h, float tmin) const
       else if (t2 > tmin && t2 < h.GetT())
       {
          vector3f n = ray.PointAtParameter(t2) - point;
-      // vector3f n = p / p.Length();
 
       // h.intersection_point = ray.GetOrigin() + t2 * ray.GetDirection() - point;
          h.Set(t2, material, n, ray);
@@ -227,6 +225,63 @@ bool Triangle::Intersect(const Ray& ray, Hit& h, float tmin) const
 }
 
 bool Triangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
+{
+   return Intersect(ray, h, tmin);
+}
+
+Cone::Cone(const vector3f& tip, const vector3f& ax, const float cos2a, const float h, Material* m) : v(tip), axis(ax), cos2_angle_sq(cos2a), height(h)
+{
+   material = m;
+
+   axis.Normalize();
+}
+
+bool Cone::Intersect(const Ray& ray, Hit& h, float tmin) const
+{
+   Stats::IncrementIntersections();
+
+   bool result = false;
+
+   vector3f co = ray.GetOrigin() - v;
+
+   float a = vector3f::Dot(ray.GetDirection(), axis) * vector3f::Dot(ray.GetDirection(), axis) - cos2_angle_sq;
+   float b = 2.0f * (vector3f::Dot(ray.GetDirection(), axis) * vector3f::Dot(co, axis) - vector3f::Dot(ray.GetDirection(), co) * cos2_angle_sq);
+   float c = vector3f::Dot(co, axis) * vector3f::Dot(co, axis) - vector3f::Dot(co, co) * cos2_angle_sq;
+   float d = b * b - 4.0f * a * c;
+
+   if (d > 0.0f) /* Two possible solutions. */
+   {
+      d = (float) sqrt(d);
+      float t1 = (-b - d) / (2.0f * a);
+      float t2 = (-b + d) / (2.0f * a);
+
+      float t = t1;
+      if (t2 < t1) t = t2;
+
+      vector3f cp = ray.GetOrigin() + t * ray.GetDirection() - v;
+      float q = vector3f::Dot(cp, axis);
+
+      if (q < 0.0f || q > height)
+      {
+         result = false;
+      }
+      else
+      {
+         vector3f n = (cp * vector3f::Dot(axis, cp) / vector3f::Dot(cp, cp) - axis);
+         n.Normalize();
+
+         if (t > tmin && t < h.GetT())
+         {
+            h.Set(t, material, n, ray);
+            result = true;
+         }
+      }
+   }
+
+   return result;
+}
+
+bool Cone::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
 {
    return Intersect(ray, h, tmin);
 }
