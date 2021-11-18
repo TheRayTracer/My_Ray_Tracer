@@ -12,6 +12,8 @@ class Filter
 {
 public:
    virtual float GetWeight(const vector2f& p) const = 0;
+
+   virtual ~Filter() { }
 };
 
 class Box : public Filter
@@ -178,11 +180,11 @@ public:
          }
       }
 
-      Image::Format type = Image::TGA;
+      Image::Format type = Image::Format::TGA;
 
       if (strstr(szImageFileName, ".bmp") != NULL)
       {
-         type = Image::BMP;
+         type = Image::Format::BMP;
       }
 
       capture.Save(szImageFileName, type);

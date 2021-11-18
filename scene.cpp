@@ -4,6 +4,7 @@
 // In hindsight it was a mistake to use asserts to attempt to validate tokens.
 
 #define _CRT_SECURE_NO_DEPRECATE
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <string.h>
@@ -956,7 +957,7 @@ CSGPair* Scene::ParseCSGPair()
 
    GetToken(token); assert(strcmp(token, "{") == 0);
 
-   CSGPair::Type t = CSGPair::Union;
+   CSGPair::Type t = CSGPair::Type::Union;
    Solid* a = NULL, * b = NULL;
 
    for (;;)
@@ -973,11 +974,11 @@ CSGPair* Scene::ParseCSGPair()
 
          if (strcmp(token, "Intersection") == 0)
          {
-            t = CSGPair::Intersection;
+            t = CSGPair::Type::Intersection;
          }
          else if (strcmp(token, "Difference") == 0)
          {
-            t = CSGPair::Difference;
+            t = CSGPair::Type::Difference;
          }
       }
       else if (strcmp(token, "MaterialIndex") == 0)

@@ -12,6 +12,8 @@ class Light
 public:
    virtual void GetIllumination(const vector3f& p, vector3f& d, vector3f& c, float& distance_to_light) const = 0;
    virtual bool UseSamples() const = 0;
+
+   virtual ~Light() { }
 };
 
 class DirectionalLight : public Light

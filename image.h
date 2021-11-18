@@ -18,7 +18,7 @@ public:
    Image(const Image& i);
    ~Image();
 
-   enum Format {TGA, BMP};
+   enum class Format {TGA, BMP};
 
    int GetWidth()  const {   return w;   }
    int GetHeight() const {   return h;   }

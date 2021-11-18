@@ -105,11 +105,11 @@ void Image::Save(const char* szFileName, Format t) const
 {
    if (szFileName != NULL)
    {
-      if (t == TGA)
+      if (t == Format::TGA)
       {
          SaveTGA(szFileName);
       }
-      else if (t == BMP)
+      else if (t == Format::BMP)
       {
          SaveBMP(szFileName);
       }

@@ -127,7 +127,6 @@ bool MotionSphere::Intersect(const Ray& ray, Hit& h, float tmin) const
       if (t1 > tmin && t1 < h.GetT())
       {
          vector3f n = ray.PointAtParameter(t1) - p;
-      // vector3f n = p / p.Length();
          
       // h.intersection_point = ray.GetOrigin() + t1 * ray.GetDirection() - point;
          h.Set(t1, material, n, ray);
@@ -136,7 +135,6 @@ bool MotionSphere::Intersect(const Ray& ray, Hit& h, float tmin) const
       else if (t2 > tmin && t2 < h.GetT())
       {
          vector3f n = ray.PointAtParameter(t2) - p;
-      // vector3f n = p / p.Length();
 
       // h.intersection_point = ray.GetOrigin() + t2 * ray.GetDirection() - point;
          h.Set(t2, material, n, ray);
@@ -826,7 +824,7 @@ bool CSGPair::Intersect(const Ray& ray, Hit& h, float tmin) const
 {
    bool result = false;
 
-   if (type == Difference)
+   if (type == Type::Difference)
    {
       Hit h1_min, h1_max, h2_min, h2_max;
 
@@ -864,7 +862,7 @@ bool CSGPair::Intersect(const Ray& ray, Hit& h, float tmin) const
          }
       }
    }
-   else if (type == Intersection)
+   else if (type == Type::Intersection)
    {
       Hit h1_min, h1_max, h2_min, h2_max;
 
@@ -894,7 +892,7 @@ bool CSGPair::Intersect(const Ray& ray, Hit& h, float tmin) const
          }
       }
    }
-   else if (type == Union)
+   else if (type == Type::Union)
    {
       Hit h1_max;
       if (a->Intersect(ray, h, h1_max, tmin) != false)

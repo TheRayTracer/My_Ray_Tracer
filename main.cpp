@@ -7,7 +7,7 @@
    The ray traced scene, is committed to an image file.
 
    Simon Flannery, Advanced Graphics, La Trobe University, 2005.
-   Simon Flannery, 2006 - 2020.
+   Simon Flannery, 2006 - 2022.
  */
 
 #include <stdlib.h>
@@ -25,19 +25,19 @@
 #include "film.h"
 
 /* Render the ray traced scene to an image. */
-void Voodoo(Scene* scene, const char* szImageFileName, const int width, const int height, int bounces, const float weight, const float epsilon, const bool shadows, const bool back, const int samples, const int stratified, const Filter* filter);
+void Voodoo(Scene* scene, const char* szImageFileName, const size_t width, const size_t height, size_t bounces, const float weight, const float epsilon, const bool shadows, const bool back, const size_t samples, const size_t stratified, const Filter* filter);
 
-int main(int argc, char* argv[])
+int main(size_t argc, char* argv[])
 {
    srand((unsigned int) time(NULL));
 
-   int width = 0, height = 0, bounces = 0, samples = 16, stratified_samples = 5;
+   size_t width = 0, height = 0, bounces = 0, samples = 16, stratified_samples = 5;
    float weight = 0.0f, epsilon = EPSILON;
    bool shadows = false, back = false;
    char* szInputFileName = NULL, * szImageFileName = NULL;
    Filter* filter = new Box();
 
-   for (int i = 1; i < argc; ++i)
+   for (size_t i = 1; i < argc; ++i)
    {
       if (strcmp(argv[i], "-input") == 0)
       {
@@ -74,6 +74,7 @@ int main(int argc, char* argv[])
 
             float radius = (float) atof(argv[i]);
 
+            delete filter;
             filter = new Gaussian(radius);
          }
       }
@@ -128,7 +129,7 @@ int main(int argc, char* argv[])
    return 0;
 }
 
-void Voodoo(Scene* scene, const char* szImageFileName, const int width, const int height, int bounces, const float weight, const float epsilon, const bool shadows, const bool back, const int samples, const int stratified, const Filter* filter)
+void Voodoo(Scene* scene, const char* szImageFileName, const size_t width, const size_t height, size_t bounces, const float weight, const float epsilon, const bool shadows, const bool back, const size_t samples, const size_t stratified, const Filter* filter)
 {
    Film frame(width, height, stratified * stratified);
 
@@ -138,7 +139,7 @@ void Voodoo(Scene* scene, const char* szImageFileName, const int width, const in
 
    Camera* camera = scene->GetCamera();
 
-   int distribute = 1;
+   size_t distribute = 1;
 
    if (camera != NULL && scene->GetGroup() != NULL)
    {
@@ -147,12 +148,12 @@ void Voodoo(Scene* scene, const char* szImageFileName, const int width, const in
          distribute = samples;
       }
 
-      const int size = height * width;
+      const size_t size = height * width;
       int last_percent = 0;
 
-      for (int i = 0; i < width; ++i)
+      for (size_t i = 0; i < width; ++i)
       {
-         for (int j = 0; j < height; ++j)
+         for (size_t j = 0; j < height; ++j)
          {
             float pc = (float) (i * width + j);
             int percent = (int) (100.0f * (pc / size));
@@ -164,9 +165,9 @@ void Voodoo(Scene* scene, const char* szImageFileName, const int width, const in
                last_percent = percent;
             }
 
-            for (int s = 0; s < stratified; ++s) /* Using stratified samples in a grid for sub-pixels. */
+            for (size_t s = 0; s < stratified; ++s) /* Using stratified samples in a grid for sub-pixels. */
             {
-               for (int t = 0; t < stratified; ++t)
+               for (size_t t = 0; t < stratified; ++t)
                {
                   vector3f color;
 
@@ -176,7 +177,7 @@ void Voodoo(Scene* scene, const char* szImageFileName, const int width, const in
                   vector2f p((i + jitter[x]) / (float) width,
                              (j + jitter[y]) / (float) height);
 
-                  for (int k = 0; k < distribute; ++k)
+                  for (size_t k = 0; k < distribute; ++k)
                   {
                      Stats::IncrementNonShadowRays();
                      const Ray ray = camera->GenerateRay(p);

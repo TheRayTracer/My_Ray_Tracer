@@ -16,6 +16,8 @@ public:
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const = 0;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const = 0;
 
+   virtual ~Object() { }
+
 protected:
    Material* material;
 
@@ -185,7 +187,7 @@ private:
 class CSGPair : public Object
 {
 public:
-   enum Type { Union, Intersection, Difference };
+   enum class Type { Union, Intersection, Difference };
 
    CSGPair(Solid* sa, Solid* sb);
    ~CSGPair();

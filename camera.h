@@ -20,6 +20,8 @@ public:
 
       return d.Normalize();
    }
+
+   virtual ~Camera() { }
 };
 
 class OrthographicCamera : public Camera

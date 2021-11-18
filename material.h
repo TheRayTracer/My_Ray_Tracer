@@ -13,6 +13,15 @@
 class Material
 {
 public:
+   Material(float exp, float refract_index, float blr, bool back)
+   {
+      exponent = exp;
+      refraction_index = refract_index;
+      blur = blr;
+
+      shade_back = back;
+   }
+
    virtual vector3f GetDiffuseColor(const vector3f&) const {   return diffuse_color;   }
    virtual vector3f GetSpecularColor(const vector3f&) const {   return specular_color;   }
    virtual vector3f GetReflectiveColor(const vector3f&) const {   return reflective_color;   }
@@ -23,6 +32,8 @@ public:
    virtual void ShadeBack(bool back = true) {   shade_back = back;   return;   }
 
    virtual vector3f Shade(const Ray& ray, const Hit& hit, const vector3f& direction_to_light, const vector3f& light_color) const = 0;
+
+   virtual ~Material() { }
 
 protected:
    vector3f diffuse_color;
@@ -46,40 +57,30 @@ private:
 class PhongMaterial : public Material
 {
 public:
-   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e)
+   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e) : Material(e, 0.0f, 0.0f, false)
    {
       diffuse_color  = diffuse;
       specular_color = specular;
-      exponent = e;
-      blur = 0.0f;
-
-      shade_back = false;
    }
 
-   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e, const vector3f& reflective, const vector3f& transparent, float refraction)
+   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e, const vector3f& reflective, const vector3f& transparent, float refraction) : Material(e, 0.0f, 0.0f, false)
    {
       diffuse_color  = diffuse;
       specular_color = specular;
-      exponent = e;
+
       reflective_color  = reflective;
       transparent_color = transparent;
       refraction_index  = refraction;
-      blur = 0.0f;
-
-      shade_back = false;
    }
 
-   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e, const vector3f& reflective, const vector3f& transparent, float refraction, float blurriness)
+   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e, const vector3f& reflective, const vector3f& transparent, float refraction, float blurriness) : Material(e, 0.0f, blurriness, false)
    {
       diffuse_color  = diffuse;
       specular_color = specular;
-      exponent = e;
+
       reflective_color  = reflective;
       transparent_color = transparent;
       refraction_index  = refraction;
-      blur = blurriness;
-
-      shade_back = false;
    }
 
    virtual vector3f Shade(const Ray& ray, const Hit& hit, const vector3f& direction_to_light, const vector3f& light_color) const
@@ -110,7 +111,7 @@ private:
 class Checkerboard : public Material
 {
 public:
-   Checkerboard(Matrix m, Material* m1, Material* m2) : matrix(m), material1(m1), material2(m2)
+   Checkerboard(Matrix m, Material* m1, Material* m2) : Material(0.0f, 0.0f, 0.0f, false), matrix(m), material1(m1), material2(m2)
    {
 
    }
@@ -257,7 +258,7 @@ private:
 class NoiseMaterial : public Material
 {
 public:
-   NoiseMaterial(Matrix m, Material* m1, Material* m2, int oct) : matrix(m), material1(m1), material2(m2), octaves(oct)
+   NoiseMaterial(Matrix m, Material* m1, Material* m2, int oct) : Material(0.0f, 0.0f, 0.0f, false), matrix(m), material1(m1), material2(m2), octaves(oct)
    {
 
    }
