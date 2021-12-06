@@ -44,7 +44,7 @@ private:
    {
       float c = r - (float) fabs(d);
 
-      if (c < 0.0)
+      if (c < 0.0f)
       {
          c = 0.0f;
       }
@@ -71,11 +71,9 @@ protected:
 private:
    float Calculate(const vector2f& p) const
    {
-   // float c = (float) (expf(-((d * d) / (2.0f * s * s))));
-
       float c = (float) (expf(-(((p[x] * p[x]) + (p[y] * p[y])) / (2.0f * s * s))));
 
-      if (c < 0.0)
+      if (c < 0.0f)
       {
          c = 0.0f;
       }

@@ -13,17 +13,16 @@ class Material;
 class Hit
 {
 public:
-   Hit(float _t = FLT_MAX, Material* m = NULL) : tmin(_t),  material(m) { }
-   Hit(float _t, Material* m, const vector3f& n) : tmin(_t), material(m) {   normal = n;   }
+   Hit(float t = FLT_MAX) : tmin(t),  material(NULL) { }
 
    float GetT()            const {   return tmin;   }
    Material* GetMaterial() const {   return material;   }
    vector3f GetIntersectionPoint() const {   return intersection_point;   }
    vector3f GetNormal()    const {   return normal;   }
 
-   void Set(float _t, Material* m, const vector3f& n, const Ray& ray)
+   void Set(float t, Material* m, const vector3f& n, const Ray& ray)
    {
-      tmin = _t;
+      tmin = t;
       material = m;
       normal = n;
 

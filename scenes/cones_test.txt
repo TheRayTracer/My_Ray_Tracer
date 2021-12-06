@@ -70,4 +70,5 @@ Group {
     Plane {
 	normal 0 1 0
         offset -1
+    }
 }

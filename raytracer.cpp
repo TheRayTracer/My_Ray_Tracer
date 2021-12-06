@@ -54,24 +54,24 @@ vector3f RayTracer::TraceRay(const Ray& ray, int bounce, float weight, float ind
             {
                Stats::IncrementShadowRays();
                const Ray ray2(hit.GetIntersectionPoint(), light_direction);
-               Hit hit2(distance_to_light, NULL);
+               Hit hit2(distance_to_light);
 
                if (scene->GetGroup()->ShadowIntersect(ray2, hit2, epsilon) == false) /* Not In Shadow. */
                {
                   distributed_color = distributed_color + hit.GetMaterial()->Shade(ray, hit, light_direction, light_color);
                }
-               else
-               { 
-               /* The following is very expermential to support shadows from transparent objects. */
-                  vector3f transparent_color = hit2.GetMaterial()->GetTransparentColor(hit2.GetIntersectionPoint());
+            // else
+            // { 
+            /// * The following is very expermential to support shadows from transparent objects. */
+            //    vector3f transparent_color = hit2.GetMaterial()->GetTransparentColor(hit2.GetIntersectionPoint());
 
-                  if (transparent_color > vector3f(0.0f, 0.0f, 0.0f))
-                  {
-                     float d = max(vector3f::Dot(light_direction, hit.GetNormal()), 0.0f);
+            //    if (transparent_color > vector3f(0.0f, 0.0f, 0.0f))
+            //    {
+            //       float d = max(vector3f::Dot(light_direction, hit.GetNormal()), 0.0f);
 
-                     distributed_color = distributed_color + d * light_color * transparent_color;
-                  }
-               }
+            //       distributed_color = distributed_color + d * light_color * transparent_color;
+            //    }
+            // }
             }
             else
             {

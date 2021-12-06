@@ -13,13 +13,13 @@
 class Material
 {
 public:
-   Material(float exp, float refract_index, float blr, bool back)
+   Material()
    {
-      exponent = exp;
-      refraction_index = refract_index;
-      blur = blr;
+      exponent = 0.0f;
+      refraction_index = 0.0f;
+      blur = 0.0f;
 
-      shade_back = back;
+      shade_back = false;
    }
 
    virtual vector3f GetDiffuseColor(const vector3f&) const {   return diffuse_color;   }
@@ -28,8 +28,9 @@ public:
    virtual vector3f GetTransparentColor(const vector3f&) const {   return transparent_color;   }
    virtual float    GetRefractionIndex(const vector3f&) const {   return refraction_index;   }
    virtual float    GetBlur(const vector3f&) const {   return blur;   }
+   virtual float    GetExponent(const vector3f&) const { return exponent; }
 
-   virtual void ShadeBack(bool back = true) {   shade_back = back;   return;   }
+   void ShadeBack(bool back = true) {   shade_back = back;   return;   }
 
    virtual vector3f Shade(const Ray& ray, const Hit& hit, const vector3f& direction_to_light, const vector3f& light_color) const = 0;
 
@@ -57,13 +58,19 @@ private:
 class PhongMaterial : public Material
 {
 public:
-   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e) : Material(e, 0.0f, 0.0f, false)
+   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e)
    {
       diffuse_color  = diffuse;
       specular_color = specular;
+
+      exponent = e;
+      refraction_index = 0.0f;
+      blur = 0.0f;
+
+      shade_back = false;
    }
 
-   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e, const vector3f& reflective, const vector3f& transparent, float refraction) : Material(e, 0.0f, 0.0f, false)
+   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e, const vector3f& reflective, const vector3f& transparent, float refraction)
    {
       diffuse_color  = diffuse;
       specular_color = specular;
@@ -71,9 +78,15 @@ public:
       reflective_color  = reflective;
       transparent_color = transparent;
       refraction_index  = refraction;
+
+      exponent = e;
+      refraction_index = refraction;
+      blur = 0.0f;
+
+      shade_back = false;
    }
 
-   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e, const vector3f& reflective, const vector3f& transparent, float refraction, float blurriness) : Material(e, 0.0f, blurriness, false)
+   PhongMaterial(const vector3f& diffuse, const vector3f& specular, float e, const vector3f& reflective, const vector3f& transparent, float refraction, float blurriness)
    {
       diffuse_color  = diffuse;
       specular_color = specular;
@@ -81,6 +94,12 @@ public:
       reflective_color  = reflective;
       transparent_color = transparent;
       refraction_index  = refraction;
+
+      exponent = e;
+      refraction_index = refraction;
+      blur = blurriness;
+
+      shade_back = false;
    }
 
    virtual vector3f Shade(const Ray& ray, const Hit& hit, const vector3f& direction_to_light, const vector3f& light_color) const
@@ -97,9 +116,9 @@ public:
 
       vector3f h = ray.GetDirection().Negate() + direction_to_light;
 
-      const float nh = vector3f::Dot(normal, h.Normalize());
+      const float nh = max(vector3f::Dot(normal, h.Normalize()), 0.0f);
 
-      const vector3f shade = (d * light_color * diffuse_color) + light_color * specular_color * (float) pow((max(nh, 0.0f)), exponent);
+      const vector3f shade = (d * light_color * diffuse_color) + light_color * specular_color * (float) pow(nh, exponent);
 
       return shade;
    }
@@ -111,7 +130,7 @@ private:
 class Checkerboard : public Material
 {
 public:
-   Checkerboard(Matrix m, Material* m1, Material* m2) : Material(0.0f, 0.0f, 0.0f, false), matrix(m), material1(m1), material2(m2)
+   Checkerboard(Matrix m, Material* m1, Material* m2) : matrix(m), material1(m1), material2(m2)
    {
 
    }
@@ -258,9 +277,9 @@ private:
 class NoiseMaterial : public Material
 {
 public:
-   NoiseMaterial(Matrix m, Material* m1, Material* m2, int oct) : Material(0.0f, 0.0f, 0.0f, false), matrix(m), material1(m1), material2(m2), octaves(oct)
+   NoiseMaterial(Matrix m, Material* m1, Material* m2, int oct) : matrix(m), material1(m1), material2(m2), octaves(oct)
    {
-
+      shade_back = false;
    }
 
    virtual vector3f Shade(const Ray& ray, const Hit& hit, const vector3f& direction_to_light, const vector3f& light_color) const
@@ -276,9 +295,9 @@ public:
 
       vector3f h = ray.GetDirection().Negate() + direction_to_light;
 
-      const float nh = vector3f::Dot(hit.GetNormal(), h.Normalize());
+      const float nh = max(vector3f::Dot(normal, h.Normalize()), 0.0f);
 
-      const vector3f shade = (d * light_color * GetDiffuseColor(hit.GetIntersectionPoint())) + light_color * GetSpecularColor(hit.GetIntersectionPoint()) * (float)pow((max(nh, 0.0f)), exponent);
+      const vector3f shade = (d * light_color * GetDiffuseColor(hit.GetIntersectionPoint())) + light_color * GetSpecularColor(hit.GetIntersectionPoint()) * (float)pow(nh, GetExponent(hit.GetIntersectionPoint()));
 
       return shade;
    }
@@ -316,6 +335,12 @@ public:
       return color.Clamp();
    }
 
+   virtual float GetExponent(const vector3f& point) const
+   {
+      return material2->exponent; /* We have to pick the exponent from one material, but which one? 
+                                                        Should we take the average of both materials? */
+   }
+
 protected:
    virtual float CalulateNoise(const vector3f& point) const
    {
@@ -347,39 +372,6 @@ public:
 
    }
 
-   virtual vector3f GetDiffuseColor(const vector3f& point) const
-   {
-      float noise = CalulateNoise(point);
-
-      vector3f color_range = material1->diffuse_color - material2->diffuse_color;
-
-      vector3f color = (color_range * noise) + material2->diffuse_color;
-
-      return color.Clamp();
-   }
-
-   virtual vector3f GetSpecularColor(const vector3f& point) const
-   {
-      float noise = CalulateNoise(point);
-
-      vector3f color_range = material1->specular_color - material2->specular_color;
-
-      vector3f color = (color_range * noise) + material2->specular_color;
-
-      return color.Clamp();
-   }
-
-   virtual vector3f GetReflectiveColor(const vector3f& point) const
-   {
-      float noise = CalulateNoise(point);
-
-      vector3f color_range = material1->reflective_color - material2->reflective_color;
-
-      vector3f color = (color_range * noise) + material2->reflective_color;
-
-      return color.Clamp();
-   }
-
 protected:
    virtual float CalulateNoise(const vector3f& point) const
    {
@@ -409,39 +401,6 @@ public:
    WoodMaterial(Matrix m, Material* m1, Material* m2, int oct, float fre, float amp) : NoiseMaterial(m, m1, m2, oct), frequency(fre), amplitude(amp)
    {
 
-   }
-
-   virtual vector3f GetDiffuseColor(const vector3f& point) const
-   {
-      float noise = CalulateNoise(point);
-
-      vector3f color_range = material1->diffuse_color - material2->diffuse_color;
-
-      vector3f color = (color_range * noise) + material2->diffuse_color;
-
-      return color.Clamp();
-   }
-
-   virtual vector3f GetSpecularColor(const vector3f& point) const
-   {
-      float noise = CalulateNoise(point);
-
-      vector3f color_range = material1->specular_color - material2->specular_color;
-
-      vector3f color = (color_range * noise) + material2->specular_color;
-
-      return color.Clamp();
-   }
-
-   virtual vector3f GetReflectiveColor(const vector3f& point) const
-   {
-      float noise = CalulateNoise(point);
-
-      vector3f color_range = material1->reflective_color - material2->reflective_color;
-
-      vector3f color = (color_range * noise) + material2->reflective_color;
-
-      return color.Clamp();
    }
 
 protected:

@@ -11,6 +11,11 @@
 class Camera
 {
 public:
+   Camera(const vector3f& c, const vector3f& d, const vector3f& t, float s) : center(c), direction(d), up(t), size(s)
+   {
+
+   }
+
    virtual Ray GenerateRay(const vector2f& point) const = 0;
    virtual bool UseSamples() const = 0;
 
@@ -22,12 +27,19 @@ public:
    }
 
    virtual ~Camera() { }
+
+protected:
+   vector3f center;
+   vector3f direction;
+   vector3f up;
+   vector3f horizontal;
+   float size;
 };
 
 class OrthographicCamera : public Camera
 {
 public:
-   OrthographicCamera(const vector3f& c, const vector3f& d, const vector3f& t, float s) : center(c), direction(d), up(t), size(s)
+   OrthographicCamera(const vector3f& c, const vector3f& d, const vector3f& t, float s) : Camera(c, d, t, s)
    {
       direction.Normalize();
 
@@ -58,19 +70,13 @@ public:
    }
 
 protected:
-
 private:
-   vector3f center;
-   vector3f direction;
-   vector3f up;
-   vector3f horizontal;
-   float size;
 };
 
 class PerspectiveCamera : public Camera
 {
 public:
-   PerspectiveCamera(const vector3f& c, const vector3f& d, const vector3f& t, float a) : center(c), direction(d), up(t), angle(a)
+   PerspectiveCamera(const vector3f& c, const vector3f& d, const vector3f& t, float a) : Camera(c, d, t, 0.0f), angle(a)
    {
       direction.Normalize();
 
@@ -107,18 +113,13 @@ public:
 protected:
 
 private:
-   vector3f center;
-   vector3f direction;
-   vector3f up;
-   vector3f horizontal;
    float angle;
-   float size;
 };
 
 class FocalCamera : public Camera
 {
 public:
-   FocalCamera(const vector3f& c, const vector3f& d, const vector3f& t, float a, float focal, float e) : center(c), direction(d), up(t), angle(a), focal_depth(focal), lens(e)
+   FocalCamera(const vector3f& c, const vector3f& d, const vector3f& t, float a, float focal, float e) : Camera(c, d, t, 0.0f), angle(a), focal_depth(focal), lens(e)
    {
       direction.Normalize();
 
@@ -154,12 +155,7 @@ public:
 protected:
 
 private:
-   vector3f center;
-   vector3f direction;
-   vector3f up;
-   vector3f horizontal;
    float angle;
-   float size;
    float focal_depth;
    float lens;
 };
