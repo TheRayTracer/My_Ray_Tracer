@@ -4,7 +4,7 @@ FocalCamera {
    direction 0 -0.1 -1
    up 0 1 0
    angle 30
-   focal 5.2
+   focal 4.95
    eyepiece 0.25
 }
 
