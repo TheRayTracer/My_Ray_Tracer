@@ -169,13 +169,13 @@ void Voodoo(Scene* scene, const char* szImageFileName, const size_t width, const
             {
                for (size_t t = 0; t < stratified; ++t)
                {
-                  vector3f color;
+                  color3f color;
 
-                  vector2f jitter((s + random_float()) / (float) stratified,
-                                  (t + random_float()) / (float) stratified);
+                  point2f jitter((s + random_float()) / (float) stratified,
+                                 (t + random_float()) / (float) stratified);
 
-                  vector2f p((i + jitter[x]) / (float) width,
-                             (j + jitter[y]) / (float) height);
+                  point2f p((i + jitter[x]) / (float) width,
+                            (j + jitter[y]) / (float) height);
 
                   for (size_t k = 0; k < distribute; ++k)
                   {

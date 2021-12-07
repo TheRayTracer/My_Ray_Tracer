@@ -10,26 +10,26 @@
 class Ray
 {
 public:
-   Ray(const vector3f& o, const vector3f& d) : origin(o), direction(d)
+   Ray(const point3f& o, const vector3f& d) : origin(o), direction(d)
    {
       direction.Normalize();
 
       inverse_direction = vector3f(1.0f / direction[x], 1.0f / direction[y], 1.0f / direction[z]);
    }
 
-   vector3f GetOrigin()    const {   return origin;      }
+   point3f GetOrigin()    const {   return origin;      }
    vector3f GetDirection() const {   return direction;   }
   
    vector3f GetInverseDirectionForAABoxFaceIntersection() const { return inverse_direction; }
 
-   vector3f PointAtParameter(float t) const
+   point3f PointAtParameter(float t) const
    {
       return origin + direction * t;
    }
 
 protected:
 private:
-   vector3f origin;
+   point3f origin;
    vector3f direction;
 
    vector3f inverse_direction;

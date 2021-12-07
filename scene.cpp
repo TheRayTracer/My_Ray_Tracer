@@ -22,8 +22,8 @@ Scene::Scene(const char* szFileName)
 {
    group = NULL;
    camera = NULL;
-   background = vector3f(0.5f, 0.5f, 0.5f);
-   ambient_light = vector3f(1.0f, 1.0f, 1.0f);
+   background = color3f(0.5f, 0.5f, 0.5f);
+   ambient_light = color3f(1.0f, 1.0f, 1.0f);
    num_lights = 0;
  
    for (size_t i = 0; i < SIZE; ++i)
@@ -119,7 +119,7 @@ void Scene::ParseOrthographicCamera()
 
    GetToken(token); assert(strcmp(token, "{") == 0);
    GetToken(token); assert(strcmp(token, "center") == 0);
-   vector3f center = ReadVector3f();
+   point3f center = ReadVector3f();
 
    GetToken(token);
 
@@ -131,7 +131,7 @@ void Scene::ParseOrthographicCamera()
    }
    else if (strcmp(token, "lookat") == 0)
    {
-      vector3f at = ReadVector3f();
+      point3f at = ReadVector3f();
 
       direction = Camera::LookAt(center, at);
    }
@@ -157,7 +157,7 @@ void Scene::ParsePerspectiveCamera()
 
    GetToken(token); assert(strcmp(token, "{") == 0);
    GetToken(token); assert(strcmp(token, "center") == 0);
-   vector3f center = ReadVector3f();
+   point3f center = ReadVector3f();
 
    GetToken(token);
 
@@ -169,7 +169,7 @@ void Scene::ParsePerspectiveCamera()
    }
    else if (strcmp(token, "lookat") == 0)
    {
-      vector3f at = ReadVector3f();
+      point3f at = ReadVector3f();
 
       direction = Camera::LookAt(center, at);
    }
@@ -198,7 +198,7 @@ void Scene::ParseFocalCamera()
 
    GetToken(token); assert(strcmp(token, "{") == 0);
    GetToken(token); assert(strcmp(token, "center") == 0);
-   vector3f center = ReadVector3f();
+   point3f center = ReadVector3f();
 
    GetToken(token);
 
@@ -210,7 +210,7 @@ void Scene::ParseFocalCamera()
    }
    else if (strcmp(token, "lookat") == 0)
    {
-      vector3f at = ReadVector3f();
+      point3f at = ReadVector3f();
 
       direction = Camera::LookAt(center, at);
    }
@@ -299,7 +299,7 @@ Light* Scene::ParseDirectionalLight()
    vector3f direction = ReadVector3f();
 
    GetToken(token); assert(strcmp(token, "color") == 0);
-   vector3f color = ReadVector3f();
+   color3f color = ReadVector3f();
 
    GetToken(token); assert(strcmp(token, "}") == 0);
 
@@ -312,10 +312,10 @@ Light* Scene::ParsePointLight()
 
    GetToken(token); assert(strcmp(token, "{") == 0);
    GetToken(token); assert(strcmp(token, "position") == 0);
-   vector3f position = ReadVector3f();
+   point3f position = ReadVector3f();
 
    GetToken(token); assert(strcmp(token, "color") == 0);
-   vector3f color = ReadVector3f();
+   color3f color = ReadVector3f();
    vector3f att(1.0f, 0.0f, 0.0f);
 
    GetToken(token);
@@ -338,10 +338,10 @@ Light* Scene::ParseSoftLight()
 
    GetToken(token); assert(strcmp(token, "{") == 0);
    GetToken(token); assert(strcmp(token, "position") == 0);
-   vector3f position = ReadVector3f();
+   point3f position = ReadVector3f();
 
    GetToken(token); assert(strcmp(token, "color") == 0);
-   vector3f color = ReadVector3f();
+   color3f color = ReadVector3f();
    vector3f att(1.0f, 0.0f, 0.0f);
    
    GetToken(token); 
@@ -406,11 +406,11 @@ PhongMaterial* Scene::ParsePhongMaterial()
 {
    char token[MAX_PARSER_TOKEN_LENGTH];
 
-   vector3f diffuse_color(1.0f, 1.0f, 1.0f);
-   vector3f specular_color(0.0f, 0.0f, 0.0f);
+   color3f diffuse_color(1.0f, 1.0f, 1.0f);
+   color3f specular_color(0.0f, 0.0f, 0.0f);
    float exponent = 1.0f;
-   vector3f reflective_color(0.0f, 0.0f, 0.0f);
-   vector3f transparent_color(0.0f, 0.0f, 0.0f);
+   color3f reflective_color(0.0f, 0.0f, 0.0f);
+   color3f transparent_color(0.0f, 0.0f, 0.0f);
    float index_of_refraction = 1;
    float blur = 0.0f;
 
@@ -458,7 +458,7 @@ PhongMaterial* Scene::ParsePhongMaterial()
    return new PhongMaterial(diffuse_color, specular_color, exponent, reflective_color, transparent_color, index_of_refraction, blur);
 }
 
-NoiseMaterial* Scene::ParseNoise(int count)
+NoiseMaterial* Scene::ParseNoise(size_t count)
 {
    char token[MAX_PARSER_TOKEN_LENGTH];
    GetToken(token); assert(strcmp(token, "{") == 0);
@@ -517,9 +517,9 @@ NoiseMaterial* Scene::ParseNoise(int count)
          
             GetToken(token); assert(strcmp(token, "{") == 0);
 
-            for (int j = 0; j < 4; ++j)
+            for (size_t j = 0; j < 4; ++j)
             {
-               for (int i = 0; i < 4; ++i)
+               for (size_t i = 0; i < 4; ++i)
                {
                   float v = ReadFloat();
                   matrix2.Set(i, j, v);
@@ -540,21 +540,21 @@ NoiseMaterial* Scene::ParseNoise(int count)
 
    GetToken(token); assert(strcmp(token, "materialIndex") == 0);
    
-   int m1 = ReadInt();
-   assert(m1 >= 0 && m1 < count);
+   size_t m1 = ReadInt();
+   assert(m1 < count);
    GetToken(token); assert(strcmp(token, "materialIndex") == 0);
 
-   int m2 = ReadInt();
-   assert(m2 >= 0 && m2 < count);
+   size_t m2 = ReadInt();
+   assert(m2 < count);
    GetToken(token); assert(strcmp(token, "octaves") == 0);
 
-   int octaves = ReadInt();
+   size_t octaves = ReadInt();
    GetToken(token); assert(strcmp(token, "}") == 0);
 
    return new NoiseMaterial(matrix, material[m1], material[m2], octaves);
 }
 
-MarbleMaterial* Scene::ParseMarble(int count)
+MarbleMaterial* Scene::ParseMarble(size_t count)
 {
    char token[MAX_PARSER_TOKEN_LENGTH];
    GetToken(token); assert(strcmp(token, "{") == 0);
@@ -611,9 +611,9 @@ MarbleMaterial* Scene::ParseMarble(int count)
          
             GetToken(token); assert(strcmp(token, "{") == 0);
 
-            for (int j = 0; j < 4; ++j)
+            for (size_t j = 0; j < 4; ++j)
             {
-               for (int i = 0; i < 4; ++i)
+               for (size_t i = 0; i < 4; ++i)
                {
                   float v = ReadFloat();
                   matrix2.Set(i, j, v);
@@ -634,15 +634,15 @@ MarbleMaterial* Scene::ParseMarble(int count)
 
    GetToken(token); assert(strcmp(token, "materialIndex") == 0);
 
-   int m1 = ReadInt();
-   assert(m1 >= 0 && m1 < count);
+   size_t m1 = ReadInt();
+   assert(m1 < count);
    GetToken(token); assert(strcmp(token, "materialIndex") == 0);
 
-   int m2 = ReadInt();
-   assert(m2 >= 0 && m2 < count);
+   size_t m2 = ReadInt();
+   assert(m2 < count);
    GetToken(token); assert(strcmp(token, "octaves") == 0);
 
-   int octaves = ReadInt();
+   size_t octaves = ReadInt();
    GetToken(token); assert(strcmp(token, "frequency") == 0);
 
    float frequency = ReadFloat();
@@ -654,7 +654,7 @@ MarbleMaterial* Scene::ParseMarble(int count)
    return new MarbleMaterial(matrix, material[m1], material[m2], octaves, frequency, amplitude);
 }
 
-WoodMaterial* Scene::ParseWood(int count)
+WoodMaterial* Scene::ParseWood(size_t count)
 {
    char token[MAX_PARSER_TOKEN_LENGTH];
    GetToken(token); assert(strcmp(token, "{") == 0);
@@ -711,9 +711,9 @@ WoodMaterial* Scene::ParseWood(int count)
          
             GetToken(token); assert(strcmp(token, "{") == 0);
 
-            for (int j = 0; j < 4; ++j)
+            for (size_t j = 0; j < 4; ++j)
             {
-               for (int i = 0; i < 4; ++i)
+               for (size_t i = 0; i < 4; ++i)
                {
                   float v = ReadFloat();
                   matrix2.Set(i, j, v);
@@ -734,15 +734,15 @@ WoodMaterial* Scene::ParseWood(int count)
 
    GetToken(token); assert(strcmp(token, "materialIndex") == 0);
 
-   int m1 = ReadInt();
-   assert(m1 >= 0 && m1 < count);
+   size_t m1 = ReadInt();
+   assert(m1 < count);
    GetToken(token); assert(strcmp(token, "materialIndex") == 0);
 
-   int m2 = ReadInt();
-   assert(m2 >= 0 && m2 < count);
+   size_t m2 = ReadInt();
+   assert(m2 < count);
    GetToken(token); assert(strcmp(token, "octaves") == 0);
 
-   int octaves = ReadInt();
+   size_t octaves = ReadInt();
    GetToken(token); assert(strcmp(token, "frequency") == 0);
 
    float frequency = ReadFloat();
@@ -754,7 +754,7 @@ WoodMaterial* Scene::ParseWood(int count)
    return new WoodMaterial(matrix, material[m1], material[m2], octaves, frequency, amplitude);
 }
 
-Checkerboard* Scene::ParseCheckerboard(int count)
+Checkerboard* Scene::ParseCheckerboard(size_t count)
 {
    char token[MAX_PARSER_TOKEN_LENGTH];
    GetToken(token); assert(strcmp(token, "{") == 0);
@@ -811,9 +811,9 @@ Checkerboard* Scene::ParseCheckerboard(int count)
          
             GetToken(token); assert(strcmp(token, "{") == 0);
 
-            for (int j = 0; j < 4; ++j)
+            for (size_t j = 0; j < 4; ++j)
             {
-               for (int i = 0; i < 4; ++i)
+               for (size_t i = 0; i < 4; ++i)
                {
                   float v = ReadFloat();
                   matrix2.Set(i, j, v);
@@ -834,12 +834,12 @@ Checkerboard* Scene::ParseCheckerboard(int count)
 
    GetToken(token); assert(strcmp(token, "materialIndex") == 0);
 
-   int m1 = ReadInt();
+   size_t m1 = ReadInt();
    assert(m1 >= 0 && m1 < count);
    
    GetToken(token); assert(strcmp(token, "materialIndex") == 0);
    
-   int m2 = ReadInt();
+   size_t m2 = ReadInt();
    assert(m2 >= 0 && m2 < count);
    
    GetToken(token); assert(strcmp(token, "}") == 0);
@@ -922,18 +922,18 @@ Group* Scene::ParseGroup()
    GetToken(token); assert(strcmp(token, "{") == 0);
 
    GetToken(token); assert(strcmp(token, "numObjects") == 0);
-   int num_objects = ReadInt();
+   size_t num_objects = ReadInt();
 
    Group* result = new Group(num_objects);
 
-   int count = 0;
+   size_t count = 0;
    while (num_objects > count)
    {
       GetToken(token);
    
       if (strcmp(token, "MaterialIndex") == 0)
       {
-         int index = ReadInt();
+         size_t index = ReadInt();
          assert(index >= 0 && index <= GetNumMaterials());
          current_material = GetMaterial(index);
       }
@@ -983,8 +983,8 @@ CSGPair* Scene::ParseCSGPair()
       }
       else if (strcmp(token, "MaterialIndex") == 0)
       {
-         int index = ReadInt();
-         assert(index >= 0 && index <= GetNumMaterials());
+         size_t index = ReadInt();
+         assert(index <= GetNumMaterials());
          current_material = GetMaterial(index);
       }
       else if (strcmp(token, "Cube") == 0)
@@ -1028,7 +1028,7 @@ Sphere* Scene::ParseSphere()
    GetToken(token); assert(strcmp(token, "{") == 0);
    GetToken(token); assert(strcmp(token, "center") == 0);
    
-   vector3f center = ReadVector3f();
+   point3f center = ReadVector3f();
    
    GetToken(token); assert(strcmp(token, "radius") == 0);
    
@@ -1047,7 +1047,7 @@ MotionSphere* Scene::ParseMotionSphere()
 
    GetToken(token); assert(strcmp(token, "{") == 0);
    GetToken(token); assert(strcmp(token, "center") == 0);
-   vector3f center = ReadVector3f();
+   point3f center = ReadVector3f();
    
    GetToken(token); assert(strcmp(token, "radius") == 0);
    float radius = ReadFloat();
@@ -1355,9 +1355,9 @@ Transform* Scene::ParseTransform()
       
          GetToken(token); assert(strcmp(token, "{") == 0);
 
-         for (int j = 0; j < 4; ++j)
+         for (size_t j = 0; j < 4; ++j)
          {
-            for (int i = 0; i < 4; ++i)
+            for (size_t i = 0; i < 4; ++i)
             {
                float v = ReadFloat();
                matrix2.Set(i, j, v);

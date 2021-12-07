@@ -11,7 +11,7 @@
 class Filter
 {
 public:
-   virtual float GetWeight(const vector2f& p) const = 0;
+   virtual float GetWeight(const point2f& p) const = 0;
 
    virtual ~Filter() { }
 };
@@ -19,7 +19,7 @@ public:
 class Box : public Filter
 {
 public:
-   virtual float GetWeight(const vector2f&) const
+   virtual float GetWeight(const point2f&) const
    {
       return 1.0f;
    }
@@ -33,7 +33,7 @@ class Tent : public Filter
 public:
    Tent(float radius) : r(radius) { }
 
-   virtual float GetWeight(const vector2f& p) const
+   virtual float GetWeight(const point2f& p) const
    {
       return Calculate(p[x]) * Calculate(p[y]);
    }
@@ -87,13 +87,13 @@ private:
 class Sample
 {
 public:
-   Sample() : offset(vector2f(0.5f, 0.5f)), color(vector3f(0.0f, 0.0f, 0.0f)) { };
-   Sample(const vector2f& p, const vector3f& c) : offset(p), color(c) { };
+   Sample() : offset(point2f(0.5f, 0.5f)), color(color3f(0.0f, 0.0f, 0.0f)) { };
+   Sample(const point2f& p, const color3f& c) : offset(p), color(c) { };
 
-   vector2f GetOffset() const {   return offset;   }
-   vector3f GetColor() const {   return color;   }
+   point2f GetOffset() const {   return offset;   }
+   color3f GetColor() const {   return color;   }
 
-   bool Set(const vector2f& p, const vector3f& c)
+   bool Set(const point2f& p, const color3f& c)
    {
       bool result = false;
 
@@ -109,14 +109,14 @@ public:
    }
 
 private:
-   vector2f offset;
-   vector3f color;
+   point2f offset;
+   color3f color;
 };
 
 class Film
 {
 public:
-   Film(int w, int h, int n)
+   Film(size_t w, size_t h, size_t n)
    {
       width = w;
       height = h;
@@ -130,30 +130,30 @@ public:
       delete [] samples;
    }
 
-   int GetWidth() const { return width; }
-   int GetHeight() const { return height; }
-   int GetNumSamples() const { return num_samples; }
+   size_t GetWidth() const { return width; }
+   size_t GetHeight() const { return height; }
+   size_t GetNumSamples() const { return num_samples; }
 
-   void SetSample(int _x, int _y, int i, const vector2f& offset, const vector3f& color)
+   void SetSample(size_t _x, size_t _y, size_t i, const point2f& offset, const color3f& color)
    {
       samples[GetIndex(_x, _y, i)].Set(offset, color);
 
       return;
    }
 
-   void SetSample(int _x, int _y, int i, const Sample& s)
+   void SetSample(size_t _x, size_t _y, size_t i, const Sample& s)
    {
       samples[GetIndex(_x, _y, i)].Set(s.GetOffset(), s.GetColor());
 
       return;
    }
 
-   vector3f GetColor(int _x, int _y, const Filter* filter)
+   color3f GetColor(size_t _x, size_t _y, const Filter* filter)
    {
-      vector3f color;
+      color3f color;
       float weight_sum = 0.0f;
 
-      for (int i = 0; i < num_samples; ++i)
+      for (size_t i = 0; i < num_samples; ++i)
       {
          Sample s = GetSample(_x, _y, i);
          float weight = filter->GetWeight(s.GetOffset());
@@ -170,9 +170,9 @@ public:
    {
       Image capture(width, height);
 
-      for (int i = 0; i < width; ++i)
+      for (size_t i = 0; i < width; ++i)
       {
-         for (int j = 0; j < height; ++j)
+         for (size_t j = 0; j < height; ++j)
          {
             capture.SetPixel(i, j, GetColor(i, j, filter));
          }
@@ -192,19 +192,19 @@ public:
 
 protected:
 private:
-   Sample GetSample(int i, int j, int n) const
+   Sample GetSample(size_t i, size_t j, size_t n) const
    {
       return samples[GetIndex(i, j, n)];
    }
 
-   int GetIndex(int i, int j, int n) const
+   int GetIndex(size_t i, size_t j, size_t n) const
    {
       return i * height * num_samples + j * num_samples + n;
    }
 
-   int width;
-   int height;
-   int num_samples;
+   size_t width;
+   size_t height;
+   size_t num_samples;
    Sample* samples;
 };
 

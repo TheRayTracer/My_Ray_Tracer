@@ -13,6 +13,8 @@ class Material;
 class Object
 {
 public:
+   Object() : material(NULL) {    }
+
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const = 0;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const = 0;
 
@@ -33,14 +35,14 @@ public:
 class Sphere : public Solid
 {
 public:
-   Sphere(const vector3f& p, float r, Material* m);
+   Sphere(const point3f& p, float r, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
    virtual bool Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
 
 protected:
-   vector3f point;
+   point3f point;
    float radius;
 
 private:
@@ -49,7 +51,7 @@ private:
 class MotionSphere : public Sphere
 {
 public:
-   MotionSphere(const vector3f& p, float r, const vector3f& v, Material* m);
+   MotionSphere(const point3f& p, float r, const vector3f& v, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
 
@@ -103,7 +105,7 @@ private:
 class XYRectangle : public Object
 {
 public:
-   XYRectangle(const vector2f low, const vector2f up, const float _k, Material* m);
+   XYRectangle(const point2f low, const point2f up, const float _k, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
@@ -111,14 +113,14 @@ public:
 protected:
 private:
    float k; // k = z in (x, y, z)
-   vector2f lower, upper;
+   point2f lower, upper;
    vector3f normal;
 };
 
 class XZRectangle : public Object
 {
 public:
-   XZRectangle(const vector2f low, const vector2f up, const float _k, Material* m);
+   XZRectangle(const point2f low, const point2f up, const float _k, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
@@ -126,14 +128,14 @@ public:
 protected:
 private:
    float k; // k = y in (x, y, z)
-   vector2f lower, upper;
+   point2f lower, upper;
    vector3f normal;
 };
 
 class YZRectangle : public Object
 {
 public:
-   YZRectangle(const vector2f low, const vector2f up, const float _k, Material* m);
+   YZRectangle(const point2f low, const point2f up, const float _k, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
@@ -141,15 +143,15 @@ public:
 protected:
 private:
    float k; // k = x in (x, y, z)
-   vector2f lower, upper;
+   point2f lower, upper;
    vector3f normal;
 };
 
 class Cube : public Solid
 {
 public:
-   Cube(const vector3f& p, float size, Material* m);
-   Cube(const vector3f& p, const vector3f& z, Material* m);
+   Cube(const point3f& p, float size, Material* m);
+   Cube(const point3f& p, const point3f& z, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
    virtual bool Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const;
@@ -157,7 +159,7 @@ public:
 
 protected:
 private:
-   vector3f max, min;
+   point3f max, min;
 };
 
 class Group : public Object
@@ -172,7 +174,7 @@ public:
    void SetAt(size_t i, Object* obj);
    size_t GetSize() {   return size;   }
 
-   void SetBB(const vector3f& vmin, const vector3f& vmax);
+   void SetBB(const point3f& vmin, const point3f& vmax);
 
 protected:
 private:
@@ -181,7 +183,7 @@ private:
    size_t size;
    Object** object;
 
-   vector3f bb_vmin, bb_vmax;
+   point3f bb_vmin, bb_vmax;
 };
 
 class CSGPair : public Object

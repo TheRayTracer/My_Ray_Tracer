@@ -7,7 +7,7 @@
 #include "hit.h"
 #include "Stats.h"
 
-Sphere::Sphere(const vector3f& p, float r, Material* m) : point(p), radius(r) {   material = m;   }
+Sphere::Sphere(const point3f& p, float r, Material* m) : point(p), radius(r) {   material = m;   }
 
 bool Sphere::Intersect(const Ray& ray, Hit& h, float tmin) const
 {
@@ -100,7 +100,7 @@ bool Sphere::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-MotionSphere::MotionSphere(const vector3f& p, float r, const vector3f& v, Material* m) : Sphere(p, r, m), velocity(v) {   }
+MotionSphere::MotionSphere(const point3f& p, float r, const vector3f& v, Material* m) : Sphere(p, r, m), velocity(v) {   }
 
 bool MotionSphere::Intersect(const Ray& ray, Hit& h, float tmin) const
 {
@@ -284,7 +284,7 @@ bool Cone::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-XYRectangle::XYRectangle(const vector2f low, const vector2f up, const float _k, Material* m)
+XYRectangle::XYRectangle(const point2f low, const point2f up, const float _k, Material* m)
 {
    material = m;
 
@@ -325,7 +325,7 @@ bool XYRectangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-XZRectangle::XZRectangle(const vector2f low, const vector2f up, const float _k, Material* m)
+XZRectangle::XZRectangle(const point2f low, const point2f up, const float _k, Material* m)
 {
    material = m;
 
@@ -366,7 +366,7 @@ bool XZRectangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-YZRectangle::YZRectangle(const vector2f low, const vector2f up, const float _k, Material* m)
+YZRectangle::YZRectangle(const point2f low, const point2f up, const float _k, Material* m)
 {
    material = m;
 
@@ -407,17 +407,17 @@ bool YZRectangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-Cube::Cube(const vector3f& p, float size, Material* m)
+Cube::Cube(const point3f& p, float size, Material* m)
 {
    size = size / 2.0f;
 
-   min = p - vector3f(size, size, size);
-   max = p + vector3f(size, size, size);
+   min = p - point3f(size, size, size);
+   max = p + point3f(size, size, size);
 
    material = m;
 }
 
-Cube::Cube(const vector3f& p, const vector3f& z, Material* m)
+Cube::Cube(const point3f& p, const point3f& z, Material* m)
 {
    min = p;
    max = z;
@@ -733,7 +733,7 @@ void Group::SetAt(size_t i, Object* obj)
    return;
 }
 
-void Group::SetBB(const vector3f& vmin, const vector3f& vmax)
+void Group::SetBB(const point3f& vmin, const point3f& vmax)
 {
    bb_vmin = vmin;
    bb_vmax = vmax;

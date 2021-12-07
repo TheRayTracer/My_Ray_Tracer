@@ -11,14 +11,14 @@
 #include <stdlib.h>
 #include <assert.h>
 
-Image::Image(int width, int height) : w(width), h(height), data(NULL)
+Image::Image(size_t width, size_t height) : w(width), h(height), data(NULL)
 {
-   int size = w * h;
+   size_t size = w * h;
    data = new vector3f[size];
 
    vector3f white(1.0f, 1.0f, 1.0f);
 
-   for (int i = 0; i < size; ++i)
+   for (size_t i = 0; i < size; ++i)
    {
       data[i] = white;
    }
@@ -29,10 +29,10 @@ Image::Image(const Image& i)
    w = i.w;
    h = i.w;
 
-   int size = w * h;
+   size_t size = w * h;
    data = new vector3f[size];
 
-   for (int j = 0; j < size; ++j)
+   for (size_t j = 0; j < size; ++j)
    {
       data[j] = i.data[j];
    }
@@ -43,62 +43,54 @@ Image::~Image()
    delete [] data;
 }
 
-void Image::SetPixel(float x, float y, const vector3f& color)
+void Image::SetPixel(float _x, float _y, const color3f& color)
 {
-   if (x < 0.0f)
+   if (_x < 0.0f)
    {
-      x = 0.0f;
+      _x = 0.0f;
    }
-   else if (x > 1.0f)
+   else if (_x > 1.0f)
    {
-      x = 1.0f;
-   }
-
-   if (y < 0.0f)
-   {
-      y = 0.0f;
-   }
-   else if (y > 1.0f)
-   {
-      y = 1.0f;
+      _x = 1.0f;
    }
 
-   int ix = (int) (x * (float) w);
-   int iy = (int) (y * (float) h);
+   if (_y < 0.0f)
+   {
+      _y = 0.0f;
+   }
+   else if (_y > 1.0f)
+   {
+      _y = 1.0f;
+   }
+
+   size_t ix = (size_t) (_x * (float) w);
+   size_t iy = (size_t) (_y * (float) h);
    
    data[iy * w + ix] = color;
 
    return;
 }
 
-void Image::SetPixel(int x, int y, const vector3f& color)
+void Image::SetPixel(size_t _x, size_t _y, const color3f& color)
 {
-   if (x < 0)
+   if (_x >= w)
    {
-      x = 0;
-   }
-   else if (x >= w)
-   {
-      x = w - 1;
+      _x = w - 1;
    }
 
-   if (y < 0)
+   if (_y >= h)
    {
-      y = 0;
-   }
-   else if (y >= h)
-   {
-      y = h - 1;
+      _y = h - 1;
    }
 
-   data[y * w + x] = color;
+   data[_y * w + _x] = color;
 
    return;
 }
 
-vector3f Image::GetPixel(int x, int y) const
+vector3f Image::GetPixel(size_t _x, size_t _y) const
 {
-   return data[y * w + x];
+   return data[_y * w + _x];
 }
 
 void Image::Save(const char* szFileName, Format t) const
@@ -125,7 +117,7 @@ void Image::SaveTGA(const char* szFileName) const
    if (file != NULL)
    {
    /* Header information. */
-      for (int i = 0; i < 18; ++i)
+      for (size_t i = 0; i < 18; ++i)
       {
          if (i == 2) WriteByte(file, 2);
          else if (i == 12) WriteByte(file, static_cast<unsigned char>(w % 256));
@@ -140,9 +132,9 @@ void Image::SaveTGA(const char* szFileName) const
    /* Write the image data. */
       for (int j = h - 1; j >= 0; --j)
       {
-         for (int i = 0; i < w; ++i)
+         for (size_t i = 0; i < w; ++i)
          {
-            vector3f v = GetPixel(i, j);
+            color3f v = GetPixel(i, j);
             WriteByte(file, ClampColorComponent(v[b]));
             WriteByte(file, ClampColorComponent(v[g]));
             WriteByte(file, ClampColorComponent(v[r]));
@@ -167,7 +159,7 @@ void Image::SaveBMP(const char* szFileName) const
              bmpHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
              bmpHeader.bfType    = BITMAP_ID; /* The magic number.  */
 
-      int pad = (4 - (w * 3) % 4) % 4;
+      size_t pad = (4 - (w * 3) % 4) % 4;
 
       BITMAPINFOHEADER bmpInfomation = {0}; /* Bitmap infomation header. */
       bmpInfomation.biSize          = sizeof(BITMAPINFOHEADER);
@@ -184,17 +176,17 @@ void Image::SaveBMP(const char* szFileName) const
       fwrite(&bmpInfomation, sizeof(BITMAPINFOHEADER), 1, file);
 
    /* Write the image data upside-down. */
-      for (int j = 0; j < h; ++j)
+      for (size_t j = 0; j < h; ++j)
       {
-         for (int i = 0; i < w; ++i)
+         for (size_t i = 0; i < w; ++i)
          {
-            vector3f v = GetPixel(i, j);
+            color3f v = GetPixel(i, j);
             WriteByte(file, ClampColorComponent(v[b]));
             WriteByte(file, ClampColorComponent(v[g]));
             WriteByte(file, ClampColorComponent(v[r]));
          }
 
-         for (int i = 0; i < pad; ++i)
+         for (size_t i = 0; i < pad; ++i)
          {
             WriteByte(file, 0);
          }

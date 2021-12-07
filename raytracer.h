@@ -15,13 +15,13 @@ class Scene;
 class RayTracer
 {
 public:
-   RayTracer(Scene* s, int max_bounces, float cutoff_weight, bool back) : scene(s), bounces(max_bounces), cutoff(cutoff_weight), epsilon(EPSILON), shadow_support(false), shade_back(back), samples(1) {   }
+   RayTracer(Scene* s, size_t max_bounces, float cutoff_weight, bool back) : scene(s), bounces(max_bounces), cutoff(cutoff_weight), epsilon(EPSILON), shadow_support(false), shade_back(back), samples(1) {   }
 
    void EnableShadows(bool enable = true, float e = EPSILON) {   shadow_support = enable;   epsilon = e;   return;   }
 
-   void SetSamples(int s) {   samples = s;   return;   }
+   void SetSamples(size_t s) {   samples = s;   return;   }
 
-   vector3f TraceRay(const Ray& ray, int bounce, float weight, float index_of_refraction) const;
+   color3f TraceRay(const Ray& ray, size_t bounce, float weight, float index_of_refraction) const;
 
    vector3f MirrorDirection(const Hit& hit, const Ray& ray) const
    {
@@ -58,13 +58,13 @@ public:
 
 private:
    Scene* scene;
-   int bounces;
+   size_t bounces;
    float cutoff;
    float epsilon;
    bool shadow_support;
    bool shade_back;
 
-   int samples;
+   size_t samples;
 };
 
 #endif

@@ -10,7 +10,7 @@
 class Light
 {
 public:
-   virtual void GetIllumination(const vector3f& p, vector3f& d, vector3f& c, float& distance_to_light) const = 0;
+   virtual void GetIllumination(const point3f& p, vector3f& d, color3f& c, float& distance_to_light) const = 0;
    virtual bool UseSamples() const = 0;
 
    virtual ~Light() { }
@@ -19,14 +19,14 @@ public:
 class DirectionalLight : public Light
 {
 public:
-   DirectionalLight(const vector3f& d, const vector3f& c)
+   DirectionalLight(const vector3f& d, const color3f& c)
    {
       direction = d;
       direction.Normalize();
       color = c;
    }
   
-   virtual void GetIllumination(const vector3f&, vector3f& d, vector3f& c, float& distance_to_light) const
+   virtual void GetIllumination(const point3f&, vector3f& d, color3f& c, float& distance_to_light) const
    {
    /* The direction to the light is the opposite of the
       direction of the directional light source. */
@@ -46,13 +46,13 @@ public:
 protected:
 private:
   vector3f direction;
-  vector3f color;
+  color3f color;
 };
 
 class PointLight : public Light
 {
 public:
-   PointLight(const vector3f& p, const vector3f& c, float a1, float a2, float a3)
+   PointLight(const point3f& p, const color3f& c, float a1, float a2, float a3)
    {
       position = p;
       color = c;
@@ -61,7 +61,7 @@ public:
       attenuation_3 = a3;
    }
 
-   virtual void GetIllumination(const vector3f& p, vector3f& d, vector3f& c, float& distance_to_light) const
+   virtual void GetIllumination(const point3f& p, vector3f& d, color3f& c, float& distance_to_light) const
    {
       d = position - p;
 
@@ -87,8 +87,8 @@ public:
    }
 
 protected:
-   vector3f position;
-   vector3f color;
+   point3f position;
+   color3f color;
 
 /* Attenuation of the light. */
    float attenuation_1;
@@ -101,9 +101,9 @@ private:
 class SoftLight : public PointLight
 {
 public:
-   SoftLight(const vector3f& p, const vector3f& c, float a1, float a2, float a3) : PointLight(p, c, a1, a2, a3) {   }
+   SoftLight(const vector3f& p, const color3f& c, float a1, float a2, float a3) : PointLight(p, c, a1, a2, a3) {   }
 
-   virtual void GetIllumination(const vector3f& p, vector3f& d, vector3f& c, float& distance_to_light) const
+   virtual void GetIllumination(const point3f& p, vector3f& d, color3f& c, float& distance_to_light) const
    {
       d = position - p;
       float distance_to_center = d.Length();

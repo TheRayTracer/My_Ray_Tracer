@@ -7,9 +7,9 @@
 #include "hit.h"
 #include "light.h"
 
-vector3f RayTracer::TraceRay(const Ray& ray, int bounce, float weight, float index_of_refraction) const
+color3f RayTracer::TraceRay(const Ray& ray, size_t bounce, float weight, float index_of_refraction) const
 {
-   vector3f color;
+   color3f color;
 
    if (bounce > bounces)
    {
@@ -32,22 +32,23 @@ vector3f RayTracer::TraceRay(const Ray& ray, int bounce, float weight, float ind
 
       hit.GetMaterial()->ShadeBack(shade_back);
 
-      for (int k = 0; k < scene->GetNumLights(); ++k)
+      for (size_t k = 0; k < scene->GetNumLights(); ++k)
       {
          Light* light = scene->GetLight(k);
 
-         int distribute = 1;
+         size_t distribute = 1;
 
          if (light->UseSamples() != false)
          {
             distribute = samples;
          }
 
-         vector3f distributed_color;
-         for (int i = 0; i < distribute; ++i)
+         color3f distributed_color;
+         for (size_t i = 0; i < distribute; ++i)
          {
             float distance_to_light = 0.0f;
-            vector3f light_direction, light_color;
+            vector3f light_direction;
+            color3f light_color;
             light->GetIllumination(hit.GetIntersectionPoint(), light_direction, light_color, distance_to_light);
 
             if (shadow_support != false)
@@ -82,9 +83,9 @@ vector3f RayTracer::TraceRay(const Ray& ray, int bounce, float weight, float ind
          color = color + distributed_color / (float) distribute;
       }
 
-      vector3f reflective_color = hit.GetMaterial()->GetReflectiveColor(hit.GetIntersectionPoint());
+      color3f reflective_color = hit.GetMaterial()->GetReflectiveColor(hit.GetIntersectionPoint());
 
-      if (reflective_color > vector3f(0.0f, 0.0f, 0.0f))
+      if (reflective_color > color3f(0.0f, 0.0f, 0.0f))
       {
          const float fa = hit.GetMaterial()->GetBlur(hit.GetIntersectionPoint());
 
@@ -95,8 +96,8 @@ vector3f RayTracer::TraceRay(const Ray& ray, int bounce, float weight, float ind
 
             vector3f::ConstructBasisFromSingleVector(d, vw, vu, vv);
 
-            vector3f distributed_color;
-            for (int i = 0; i < samples; ++i)
+            color3f distributed_color;
+            for (size_t i = 0; i < samples; ++i)
             {
                float fu = (fa / -2.0f) + random_float() * fa;
                float fv = (fa / -2.0f) + random_float() * fa;
@@ -122,9 +123,9 @@ vector3f RayTracer::TraceRay(const Ray& ray, int bounce, float weight, float ind
          }
       }
 
-      vector3f transparent_color = hit.GetMaterial()->GetTransparentColor(hit.GetIntersectionPoint());
+      color3f transparent_color = hit.GetMaterial()->GetTransparentColor(hit.GetIntersectionPoint());
 
-      if (transparent_color > vector3f(0.0f, 0.0f, 0.0f))
+      if (transparent_color > color3f(0.0f, 0.0f, 0.0f))
       {
          float index = 1.0f;
          if (index_of_refraction == 1.0f)

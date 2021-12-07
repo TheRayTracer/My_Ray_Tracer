@@ -234,6 +234,9 @@ struct vector3f
    }
 };
 
+typedef vector3f point3f;
+typedef vector3f color3f;
+
 struct vector2f
 {
    float m[2];
@@ -254,6 +257,8 @@ struct vector2f
       return m[i];
    }
 };
+
+typedef vector2f point2f;
 
 float Det4x4(float a1, float a2, float a3, float a4, 
              float b1, float b2, float b3, float b4, 
@@ -278,9 +283,9 @@ struct Matrix
 
    void Clear()
    {
-      for (int k = 0; k < 4; ++k)
+      for (size_t k = 0; k < 4; ++k)
       {
-         for (int j = 0; j < 4; ++j)
+         for (size_t j = 0; j < 4; ++j)
          {
             data[k][j] = 0.0f; 
          }
@@ -291,9 +296,9 @@ struct Matrix
 
    void SetToIdentity()
    {
-      for (int k = 0; k < 4; ++k)
+      for (size_t k = 0; k < 4; ++k)
       {
-         for (int j = 0; j < 4; ++j)
+         for (size_t j = 0; j < 4; ++j)
          {
             data[k][j] = (j == k); 
          }
@@ -302,9 +307,9 @@ struct Matrix
       return;
    }
 
-   void Set(int x, int y, float v)
+   void Set(size_t _x, size_t _y, float v)
    {
-      data[y][x] = v;
+      data[_y][_x] = v;
      
       return;
    }
@@ -313,11 +318,11 @@ struct Matrix
    {
       vector4f answer;
 
-      for (int k = 0; k < 4; ++k)
+      for (size_t k = 0; k < 4; ++k)
       {
          answer[k] = 0.0f;
 
-         for (int i = 0; i < 4; ++i)
+         for (size_t i = 0; i < 4; ++i)
          {
             answer[k] += data[k][i] * v[i];
          }
@@ -391,9 +396,9 @@ struct Matrix
    {
       Matrix m;
 
-      for (int k = 0; k < 4; ++k)
+      for (size_t k = 0; k < 4; ++k)
       {
-         for (int j = 0; j < 4; ++j)
+         for (size_t j = 0; j < 4; ++j)
          {
             m.data[k][j] = data[j][k];
          }
@@ -406,11 +411,11 @@ struct Matrix
    {
       Matrix m;
       
-      for (int k = 0; k < 4; ++k)
+      for (size_t k = 0; k < 4; ++k)
       {
-         for (int j = 0; j < 4; ++j)
+         for (size_t j = 0; j < 4; ++j)
          {
-            for (int i = 0; i < 4; ++i)
+            for (size_t i = 0; i < 4; ++i)
             {
 	            m.data[k][j] += m1.data[k][i] * m2.data[i][j];
             }
@@ -424,9 +429,9 @@ struct Matrix
    {
       Matrix m;
       
-      for (int k = 0; k < 4; ++k)
+      for (size_t k = 0; k < 4; ++k)
       {
-         for (int j = 0; j < 4; ++j)
+         for (size_t j = 0; j < 4; ++j)
          {
             m.data[k][j] = m1.data[k][j] * f;
          }

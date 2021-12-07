@@ -42,12 +42,12 @@ public:
    ~Scene();
 
    Camera*   GetCamera()           const {   return camera;             }
-   vector3f  GetBackgroundColor()  const {   return background;         }
-   vector3f  GetAmbientLight()     const {   return ambient_light;      }
-   int       GetNumLights()        const {   return num_lights;         }
+   color3f   GetBackgroundColor()  const {   return background;         }
+   color3f   GetAmbientLight()     const {   return ambient_light;      }
+   size_t    GetNumLights()        const {   return num_lights;         }
    Light*    GetLight(size_t i)    const {   assert(i < num_lights);   return light[i];   }
 
-   int       GetNumMaterials()     const {   return num_materials;      }
+   size_t    GetNumMaterials()     const {   return num_materials;      }
    Material* GetMaterial(size_t i) const {   assert(i < num_materials);   return material[i];       }
    Group*    GetGroup()            const {   return group;              }
 
@@ -66,10 +66,10 @@ private:
    Light*        ParsePointLight();
    Light*        ParseSoftLight();
    PhongMaterial*  ParsePhongMaterial();
-   NoiseMaterial*  ParseNoise(int count);
-   MarbleMaterial* ParseMarble(int count);
-   WoodMaterial*   ParseWood(int count);
-   Checkerboard*   ParseCheckerboard(int count);
+   NoiseMaterial*  ParseNoise(size_t count);
+   MarbleMaterial* ParseMarble(size_t count);
+   WoodMaterial*   ParseWood(size_t count);
+   Checkerboard*   ParseCheckerboard(size_t count);
    Object*       ParseObject(char token[MAX_PARSER_TOKEN_LENGTH]);
    Group*        ParseGroup();
    CSGPair*      ParseCSGPair();
@@ -94,10 +94,10 @@ private:
    FILE* file;
 
    Camera* camera;
-   vector3f background;
+   color3f background;
 
    size_t num_lights;
-   vector3f ambient_light;
+   color3f ambient_light;
    Light* light[SIZE];
 
    size_t num_materials;

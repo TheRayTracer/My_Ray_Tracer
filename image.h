@@ -14,18 +14,18 @@
 class Image
 {
 public:
-   Image(int width, int height);
+   Image(size_t width, size_t height);
    Image(const Image& i);
    ~Image();
 
    enum class Format {TGA, BMP};
 
-   int GetWidth()  const {   return w;   }
-   int GetHeight() const {   return h;   }
+   size_t GetWidth()  const {   return w;   }
+   size_t GetHeight() const {   return h;   }
 
-   void SetPixel(float x, float y, const vector3f& color);
-   void SetPixel(int x, int y, const vector3f& color);
-   vector3f GetPixel(int x, int y) const;
+   void SetPixel(float _x, float _y, const color3f& color);
+   void SetPixel(size_t _x, size_t _y, const color3f& color);
+   color3f GetPixel(size_t _x, size_t _y) const;
 
    void Save(const char* szFileName, Format t) const;
 
@@ -51,8 +51,8 @@ private:
       return (unsigned char) b;
    }
 
-   int w, h;
-   vector3f* data;
+   size_t w, h;
+   color3f* data;
 };
 
 #endif

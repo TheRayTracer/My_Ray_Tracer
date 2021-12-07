@@ -17,7 +17,7 @@ public:
 
    float GetT()            const {   return tmin;   }
    Material* GetMaterial() const {   return material;   }
-   vector3f GetIntersectionPoint() const {   return intersection_point;   }
+   point3f GetIntersectionPoint() const {   return intersection_point;   }
    vector3f GetNormal()    const {   return normal;   }
 
    void Set(float t, Material* m, const vector3f& n, const Ray& ray)
@@ -38,7 +38,7 @@ private:
    float tmin;
    Material* material;
    vector3f normal;
-   vector3f intersection_point;
+   point3f intersection_point;
 };
 
 #endif

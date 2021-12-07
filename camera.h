@@ -11,15 +11,15 @@
 class Camera
 {
 public:
-   Camera(const vector3f& c, const vector3f& d, const vector3f& t, float s) : center(c), direction(d), up(t), size(s)
+   Camera(const point3f& c, const vector3f& d, const vector3f& t, float s) : center(c), direction(d), up(t), size(s)
    {
 
    }
 
-   virtual Ray GenerateRay(const vector2f& point) const = 0;
+   virtual Ray GenerateRay(const point2f& point) const = 0;
    virtual bool UseSamples() const = 0;
 
-   static vector3f LookAt(const vector3f& eye, const vector3f& look_at)
+   static vector3f LookAt(const point3f& eye, const point3f& look_at)
    {
       vector3f d = look_at - eye;
 
@@ -29,7 +29,7 @@ public:
    virtual ~Camera() { }
 
 protected:
-   vector3f center;
+   point3f center;
    vector3f direction;
    vector3f up;
    vector3f horizontal;
@@ -39,7 +39,7 @@ protected:
 class OrthographicCamera : public Camera
 {
 public:
-   OrthographicCamera(const vector3f& c, const vector3f& d, const vector3f& t, float s) : Camera(c, d, t, s)
+   OrthographicCamera(const point3f& c, const vector3f& d, const vector3f& t, float s) : Camera(c, d, t, s)
    {
       direction.Normalize();
 
@@ -55,9 +55,9 @@ public:
    // up.Normalize();
    }
 
-   virtual Ray GenerateRay(const vector2f& point) const
+   virtual Ray GenerateRay(const point2f& point) const
    {
-      vector3f origin = center + (point[x] - 0.5f) * size * horizontal + (point[y] - 0.5f) * size * up;
+      point3f origin = center + (point[x] - 0.5f) * size * horizontal + (point[y] - 0.5f) * size * up;
 
       Ray ray(origin, direction);
 
@@ -76,7 +76,7 @@ private:
 class PerspectiveCamera : public Camera
 {
 public:
-   PerspectiveCamera(const vector3f& c, const vector3f& d, const vector3f& t, float a) : Camera(c, d, t, 0.0f), angle(a)
+   PerspectiveCamera(const point3f& c, const vector3f& d, const vector3f& t, float a) : Camera(c, d, t, 0.0f), angle(a)
    {
       direction.Normalize();
 
@@ -91,7 +91,7 @@ public:
       size = 1.0f * (float) tan(angle);
    }
 
-   virtual Ray GenerateRay(const vector2f& point) const
+   virtual Ray GenerateRay(const point2f& point) const
    {
    // vector3f screen = center + direction + (point[x] - 0.5f) * size * horizontal + (point[y] - 0.5f) * size * up;
       vector3f d = direction + (point[x] - 0.5f) * size * horizontal + (point[y] - 0.5f) * size * up;
@@ -119,7 +119,7 @@ private:
 class FocalCamera : public Camera
 {
 public:
-   FocalCamera(const vector3f& c, const vector3f& d, const vector3f& t, float a, float focal, float e) : Camera(c, d, t, 0.0f), angle(a), focal_depth(focal), lens(e)
+   FocalCamera(const point3f& c, const vector3f& d, const vector3f& t, float a, float focal, float e) : Camera(c, d, t, 0.0f), angle(a), focal_depth(focal), lens(e)
    {
       direction.Normalize();
 
@@ -134,11 +134,11 @@ public:
       size = focal_depth * (float) tan(angle);
    }
 
-   virtual Ray GenerateRay(const vector2f& point) const
+   virtual Ray GenerateRay(const point2f& point) const
    {
       vector3f screen = center + direction * focal_depth + (point[x] - 0.5f) * size * horizontal + (point[y] - 0.5f) * size * up;
 
-      vector3f eye = center + ((rand() / (float) RAND_MAX) - 0.5f) * size * lens * horizontal + ((rand() / (float) RAND_MAX) - 0.5f) * size * lens * up;
+      point3f eye = center + ((rand() / (float) RAND_MAX) - 0.5f) * size * lens * horizontal + ((rand() / (float) RAND_MAX) - 0.5f) * size * lens * up;
 
       vector3f d = screen - eye;
 
