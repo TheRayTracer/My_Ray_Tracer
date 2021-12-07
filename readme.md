@@ -31,10 +31,11 @@ The following is a list of features that have been implemented:
 ## Example Renders
 A few renders from the framework.
 
-| ![Example1](results/cube_rectanagle_test.bmp =400x400)          | ![Example2](results/csg_difference_cube_sphere_3.bmp =400x400) |
-| Simple shape scene with mirrors                                 | A basic example of Solid Constructive Geometry                 |
-| ![Example3](results/teapot_on_wood_floor.bmp =400x400)          | ![Example4](results/spheres_scene.bmp =400x400)                |
-| Teapot model rendering with a wood checked floor (Perlin noise) | Lots of shapes with glossy reflections                         |
+|                                                                                                                    |                                                                                                            |
+|--------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| ![Example1](results/cube_rectanagle_test.bmp)<br />Simple shape scene with mirrors                                 | ![Example2](results/csg_difference_cube_sphere_3.bmp)<br /> A basic example of Solid Constructive Geometry |
+| ![Example3](results/teapot_on_wood_floor.bmp)<br />Teapot model rendering with a wood checked floor (Perlin noise) | ![Example4](results/spheres_scene.bmp)<br />Lots of shapes with glossy reflections                         |
+
 
 ## Building
 The ray tracer is written in C++, where the source code was initially developed on a Unix system using the g++ compiler, but has since been migrated to using Microsoft Visual Studio. Although it has been a number of years, it should still build on g++ (or require minimal effort to compile on g++).
