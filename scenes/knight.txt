@@ -1,0 +1,94 @@
+
+PerspectiveCamera {
+    center 2.5 5 8
+    direction -0.3 -0.4 -0.8
+    up 0.2 0.8 0
+    angle 45
+}
+
+Lights {
+    numLights 1
+    DirectionalLight {
+        direction -1 -1 -1
+        color 0.9 0.9 0.9 
+    }
+}
+
+Background {
+    color 0.2 0.2 0.7
+    ambientLight 0.3 0.3 0.3
+}
+
+Materials {
+    numMaterials 5
+
+    PhongMaterial {
+        diffuseColor 0.5 0.2 0.1
+        specularColor 0.3 0.1 0.1
+	exponent 16
+    }
+
+    PhongMaterial {
+        diffuseColor 0.7 0.5 0.5
+        specularColor 0.3 0.1 0.1
+	exponent 16
+    }
+
+    Marble {
+        materialIndex 0
+        materialIndex 1
+	octaves 5
+	frequency 2
+	amplitude 4
+    }
+
+    PhongMaterial {
+        diffuseColor 0.1 0.1 0.1
+	specularColor 1 1 1
+	exponent 16
+	reflectiveColor 1 1 1
+        blur 0.25
+    }
+
+    PhongMaterial {
+        diffuseColor 0.1 0.1 0.1
+	specularColor 1 1 1
+	exponent 16
+	transparentColor 0 0 0	
+	reflectiveColor 0.9 0.9 0.9
+	indexOfRefraction 1
+    }
+}
+
+Group {
+    numObjects 4
+
+    MaterialIndex 2
+    Transform {
+      UniformScale 0.003
+      Translate 0 -475 0
+      YRotate -45
+      TriangleMesh {
+         obj_file knight.obj
+      }
+    }
+
+    MaterialIndex 3
+    Plane {
+	normal 0 1 0
+        offset -1
+    }
+
+    MaterialIndex 4
+    XYRectangle {
+       lower -2 -1
+       upper 2 3
+       k -3
+    }
+
+    YZRectangle {
+       lower -1 -2
+       upper 3 2
+       k -3
+    }
+}

@@ -130,7 +130,7 @@ Background {
 }
 
 Group {
-    numObjects 29
+    numObjects 27
 
     MaterialIndex 0
     Plane {
@@ -222,12 +222,6 @@ Group {
         radius 1.22
     }
 
-    MaterialIndex 7
-    Sphere {
-	center -15.1 0.98 -10.1
-        radius 0.98
-    }
-
     MaterialIndex 4
     Sphere {
 	center -10.1 0.75 5.1
@@ -253,9 +247,11 @@ Group {
     }
 
     MaterialIndex 7
-    Sphere {
-	center -26.9 1.9 -72.8
-        radius 1.9
+    Cone {
+	tip -15.1 3.4 -10.1
+        axis 0 -1 0
+        angle 30
+        height 3.4
     }
 
     MaterialIndex 6
@@ -277,7 +273,6 @@ Group {
          obj_file teapot.obj
       }
     }
-
 
     MaterialIndex 9
     Transform {
@@ -301,13 +296,13 @@ Group {
 
     MaterialIndex 7
     Transform {
-        YRotate -9
-        Translate 24 0 6 
+        YRotate -40 
+        Translate -40 0 -20
         Cube {
-	   center 0 1 0
-           size 2
-       }
-   }
+           center 0 2.5 0
+           size 5
+        }
+    }
 
     MaterialIndex 2
     Transform {
@@ -316,16 +311,6 @@ Group {
         Cube {
 	   center -2.9 0.9 -9
            size 1.8
-        }
-    }
-
-    MaterialIndex 7
-    Transform {
-        YRotate -40 
-        Translate -40 0 -20
-        Cube {
-           center 0 2.5 0
-           size 5
         }
     }
 }

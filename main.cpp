@@ -66,6 +66,7 @@ int main(size_t argc, char* argv[])
 
             float radius = (float) atof(argv[i]);
 
+            delete filter;
             filter = new Tent(radius);
          }
          else if (strcmp(argv[i], "Gaussian") == 0)
@@ -139,16 +140,16 @@ void Voodoo(Scene* scene, const char* szImageFileName, const size_t width, const
 
    Camera* camera = scene->GetCamera();
 
-   size_t distribute = 1;
+   size_t num_samples = 1;
 
    if (camera != NULL && scene->GetGroup() != NULL)
    {
       if (camera->UseSamples() != false || scene->UseSamples() != false)
       {
-         distribute = samples;
+         num_samples = samples;
       }
 
-      const size_t size = height * width;
+      const size_t num_pixels = height * width;
       int last_percent = 0;
 
       for (size_t i = 0; i < width; ++i)
@@ -156,7 +157,7 @@ void Voodoo(Scene* scene, const char* szImageFileName, const size_t width, const
          for (size_t j = 0; j < height; ++j)
          {
             float pc = (float) (i * width + j);
-            int percent = (int) (100.0f * (pc / size));
+            int percent = (int) (100.0f * (pc / num_pixels));
 
             if (percent != last_percent)
             {
@@ -177,7 +178,7 @@ void Voodoo(Scene* scene, const char* szImageFileName, const size_t width, const
                   point2f p((i + jitter[x]) / (float) width,
                             (j + jitter[y]) / (float) height);
 
-                  for (size_t k = 0; k < distribute; ++k)
+                  for (size_t k = 0; k < num_samples; ++k)
                   {
                      Stats::IncrementNonShadowRays();
                      const Ray ray = camera->GenerateRay(p);
@@ -185,7 +186,7 @@ void Voodoo(Scene* scene, const char* szImageFileName, const size_t width, const
                      color = color + trace->TraceRay(ray, 0, 1.0f, 1.0f);
                   }
 
-                  color = color / (float) distribute;
+                  color = color / (float) num_samples;
 
                   frame.SetSample(i, j, s * stratified + t, jitter, color);
                }

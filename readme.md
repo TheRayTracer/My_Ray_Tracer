@@ -31,14 +31,14 @@ The following is a list of features that have been implemented:
 ## Example Renders
 A few renders from the framework.
 
-|                                                                                                                    |                                                                                                            |
-|--------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| ![Example1](results/cube_rectanagle_test.bmp)<br />Simple shape scene with mirrors                                 | ![Example2](results/csg_difference_cube_sphere_3.bmp)<br /> A basic example of Solid Constructive Geometry |
-| ![Example3](results/teapot_on_wood_floor.bmp)<br />Teapot model rendering with a wood checked floor (Perlin noise) | ![Example4](results/spheres_scene.bmp)<br />Lots of shapes with glossy reflections                         |
+|                                                                                                     |                                                                                                            |
+|-----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| ![Example1](results/focal_red_spheres_far_128.bmp)<br />Depth of field with far focus example       | ![Example2](results/csg_difference_cube_sphere_3.bmp)<br />Solid Constructive Geometry example             |
+| ![Example3](results/teapot_on_wood_floor.bmp)<br />Teapot model rendering with a wood checked floor | ![Example4](results/spheres_scene.bmp)<br />Lots of shapes with glossy reflections                         |
 
 
 ## Building
-The ray tracer is written in C++, where the source code was initially developed on a Unix system using the g++ compiler, but has since been migrated to using Microsoft Visual Studio. Although it has been a number of years, it should still build on g++ (or require minimal effort to compile on g++).
+The ray tracer is written in C++, where the source code was initially developed on a Unix system using the g++ compiler, but has since been migrated to using Microsoft Visual Studio. Although it has been a number of years, it still builds using g++ and a handy makefile with minimal changes (disabling bitmap support).
 
 ## Usage
 Command line helper files have been provided that load the scenes and set support parameters.

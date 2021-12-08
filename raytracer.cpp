@@ -36,15 +36,15 @@ color3f RayTracer::TraceRay(const Ray& ray, size_t bounce, float weight, float i
       {
          Light* light = scene->GetLight(k);
 
-         size_t distribute = 1;
+         size_t num_samples = 1;
 
          if (light->UseSamples() != false)
          {
-            distribute = samples;
+            num_samples = samples;
          }
 
          color3f distributed_color;
-         for (size_t i = 0; i < distribute; ++i)
+         for (size_t i = 0; i < num_samples; ++i)
          {
             float distance_to_light = 0.0f;
             vector3f light_direction;
@@ -80,7 +80,7 @@ color3f RayTracer::TraceRay(const Ray& ray, size_t bounce, float weight, float i
             }
          }
 
-         color = color + distributed_color / (float) distribute;
+         color = color + distributed_color / (float) num_samples;
       }
 
       color3f reflective_color = hit.GetMaterial()->GetReflectiveColor(hit.GetIntersectionPoint());
