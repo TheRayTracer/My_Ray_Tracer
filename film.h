@@ -60,16 +60,14 @@ class Gaussian : public Filter
 public:
    Gaussian(float sigma) : s(sigma) { }
 
-   virtual float GetWeight(const vector2f& p) const
+   virtual float GetWeight(const point2f& p) const
    {
-   // return Calculate(p[x]) * Calculate(p[y]);
-
       return Calculate(p);
    }
 
 protected:
 private:
-   float Calculate(const vector2f& p) const
+   float Calculate(const point2f& p) const
    {
       float c = (float) (expf(-(((p[x] * p[x]) + (p[y] * p[y])) / (2.0f * s * s))));
 

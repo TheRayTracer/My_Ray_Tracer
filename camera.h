@@ -13,7 +13,18 @@ class Camera
 public:
    Camera(const point3f& c, const vector3f& d, const vector3f& t, float s) : center(c), direction(d), up(t), size(s)
    {
+      direction.Normalize();
 
+      vector3f u = direction * vector3f::Dot(direction, up);
+      up = up - u;
+
+      up.Normalize();
+
+      horizontal = vector3f::Cross(direction, up);
+      horizontal.Normalize();
+
+   // up = vector3f::Cross(horizontal, direction);
+   // up.Normalize();
    }
 
    virtual Ray GenerateRay(const point2f& point) const = 0;
@@ -41,18 +52,7 @@ class OrthographicCamera : public Camera
 public:
    OrthographicCamera(const point3f& c, const vector3f& d, const vector3f& t, float s) : Camera(c, d, t, s)
    {
-      direction.Normalize();
 
-      vector3f u = direction * vector3f::Dot(direction, up);
-      up = up - u;
-
-      up.Normalize();
-
-      horizontal = vector3f::Cross(direction, up);
-      horizontal.Normalize();
-      
-   // up = vector3f::Cross(horizontal, direction);
-   // up.Normalize();
    }
 
    virtual Ray GenerateRay(const point2f& point) const
@@ -76,29 +76,23 @@ private:
 class PerspectiveCamera : public Camera
 {
 public:
-   PerspectiveCamera(const point3f& c, const vector3f& d, const vector3f& t, float a) : Camera(c, d, t, 0.0f), angle(a)
+   PerspectiveCamera(const point3f& c, const vector3f& d, const vector3f& t, float a) : Camera(c, d, t, 0.0f), angle(a), focal_depth(1.0)
    {
-      direction.Normalize();
+      size = focal_depth * (float) tan(angle);
+   }
 
-      vector3f u = direction * vector3f::Dot(direction, up);
-      up = up - u;
-
-      up.Normalize();
-
-      horizontal = vector3f::Cross(direction, up);
-      horizontal.Normalize();
-      
-      size = 1.0f * (float) tan(angle);
+   PerspectiveCamera(const point3f& c, const vector3f& d, const vector3f& t, float a, float fd) : Camera(c, d, t, 0.0f), angle(a), focal_depth(fd)
+   {
+      size = focal_depth * (float) tan(angle);
    }
 
    virtual Ray GenerateRay(const point2f& point) const
    {
-   // vector3f screen = center + direction + (point[x] - 0.5f) * size * horizontal + (point[y] - 0.5f) * size * up;
-      vector3f d = direction + (point[x] - 0.5f) * size * horizontal + (point[y] - 0.5f) * size * up;
+      vector3f screen = center + direction + (point[x] - 0.5f) * size * horizontal + (point[y] - 0.5f) * size * up;
 
    /* Direction vectors are then calculated by subtracting the camera
       center point from the screen point. Don't forget to normalize. */
-   // vector3f d = screen - center;
+      vector3f d = screen - center;
 
       Ray ray(center, d.Normalize());
 
@@ -111,27 +105,17 @@ public:
    }
 
 protected:
+   float angle;
+   float focal_depth;
 
 private:
-   float angle;
 };
 
-class FocalCamera : public Camera
+class FocalCamera : public PerspectiveCamera
 {
 public:
-   FocalCamera(const point3f& c, const vector3f& d, const vector3f& t, float a, float focal, float e) : Camera(c, d, t, 0.0f), angle(a), focal_depth(focal), lens(e)
+   FocalCamera(const point3f& c, const vector3f& d, const vector3f& t, float a, float fd, float e) : PerspectiveCamera(c, d, t, a, fd), lens(e)
    {
-      direction.Normalize();
-
-      vector3f u = direction * vector3f::Dot(direction, up);
-      up = up - u;
-
-      up.Normalize();
-
-      horizontal = vector3f::Cross(direction, up);
-      horizontal.Normalize();
-
-      size = focal_depth * (float) tan(angle);
    }
 
    virtual Ray GenerateRay(const point2f& point) const
@@ -155,8 +139,6 @@ public:
 protected:
 
 private:
-   float angle;
-   float focal_depth;
    float lens;
 };
 
