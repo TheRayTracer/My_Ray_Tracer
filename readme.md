@@ -34,7 +34,7 @@ A few renders from the framework.
 |                                                                                                     |                                                                                                            |
 |-----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
 | ![Example1](results/focal_red_spheres_far_128.bmp)<br />Depth of field with far focus example       | ![Example2](results/csg_difference_cube_sphere_3.bmp)<br />Solid Constructive Geometry example             |
-| ![Example3](results/teapot_on_wood_floor.bmp)<br />Teapot model rendering with a wood checked floor | ![Example4](results/spheres_scene.bmp)<br />Lots of shapes with glossy reflections                         |
+| ![Example3](results/teapot_on_wood_floor.bmp)<br />Teapot model rendering with a wood checked floor | ![Example4](results/shapes_scene.bmp)<br />Lots of shapes with glossy reflections                         |
 
 
 ## Building
