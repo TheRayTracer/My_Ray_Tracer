@@ -5,7 +5,7 @@
 #include "object.h"
 #include "ray.h"
 #include "hit.h"
-#include "Stats.h"
+#include "stats.h"
 
 Sphere::Sphere(const point3f& p, float r, Material* m) : point(p), radius(r) {   material = m;   }
 
@@ -265,7 +265,7 @@ bool Cone::Intersect(const Ray& ray, Hit& h, float tmin) const
       }
       else
       {
-         vector3f n = (cp * vector3f::Dot(axis, cp) / vector3f::Dot(cp, cp) - axis);
+         vector3f n = (cp * vector3f::Dot(axis, cp) / vector3f::Dot(cp, cp)) - axis;
          n.Normalize();
 
          if (t > tmin && t < h.GetT())
@@ -926,13 +926,13 @@ bool Transform::Intersect(const Ray& ray, Hit& h, float tmin) const
    matrix.Inverse(1e-4f).Transform(origin);
    matrix.Inverse(1e-4f).TransformDirection(direction);
 
-   float scale = direction.Length();
+   const float scale = direction.Length();
 
-   Ray new_ray(origin, direction.Normalize());
+   const Ray new_ray(origin, direction.Normalize());
 
    h.Set(h.GetT() * scale, h.GetMaterial(), h.GetNormal(), new_ray);
 
-   bool intersect = object->Intersect(new_ray, h, tmin);
+   const bool intersect = object->Intersect(new_ray, h, tmin);
 
    if (intersect != false)
    {

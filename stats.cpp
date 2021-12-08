@@ -1,6 +1,6 @@
 /* File: stats.cpp; Mode: C++; Tab-width: 3; Author: Simon Flannery;          */
 
-#include "Stats.h"
+#include "stats.h"
 
 int Stats::width = 0;
 int Stats::height = 0;
