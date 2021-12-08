@@ -464,8 +464,9 @@ NoiseMaterial* Scene::ParseNoise(size_t count)
    GetToken(token); assert(strcmp(token, "{") == 0);
    
    Matrix matrix;
-   
-   GetToken(token); 
+          matrix.SetToIdentity();
+
+   GetToken(token);
    
    if (strcmp(token, "Transform") == 0)
    {
@@ -558,7 +559,10 @@ MarbleMaterial* Scene::ParseMarble(size_t count)
 {
    char token[MAX_PARSER_TOKEN_LENGTH];
    GetToken(token); assert(strcmp(token, "{") == 0);
-   Matrix matrix; 
+
+   Matrix matrix;
+          matrix.SetToIdentity();
+
    GetToken(token); 
 
    if (strcmp(token, "Transform") == 0)
@@ -658,7 +662,10 @@ WoodMaterial* Scene::ParseWood(size_t count)
 {
    char token[MAX_PARSER_TOKEN_LENGTH];
    GetToken(token); assert(strcmp(token, "{") == 0);
-   Matrix matrix; 
+
+   Matrix matrix;
+          matrix.SetToIdentity();
+
    GetToken(token); 
 
    if (strcmp(token, "Transform") == 0)
@@ -758,7 +765,9 @@ Checkerboard* Scene::ParseCheckerboard(size_t count)
 {
    char token[MAX_PARSER_TOKEN_LENGTH];
    GetToken(token); assert(strcmp(token, "{") == 0);
-   Matrix matrix; 
+   Matrix matrix;
+          matrix.SetToIdentity();
+
    GetToken(token); 
    
    if (strcmp(token, "Transform") == 0)
