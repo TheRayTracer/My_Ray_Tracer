@@ -4,8 +4,8 @@
 #include "scene.h"
 #include "object.h"
 #include "material.h"
-#include "hit.h"
 #include "light.h"
+#include "stats.h"
 
 color3f RayTracer::TraceRay(const Ray& ray, size_t bounce, float weight, float index_of_refraction) const
 {

@@ -17,12 +17,10 @@
 
 #include "math.h"
 #include "camera.h"
-#include "object.h"
 #include "scene.h"
-#include "hit.h"
-#include "stats.h"
 #include "raytracer.h"
 #include "film.h"
+#include "stats.h"
 
 /* Render the ray traced scene to an image. */
 void Voodoo(Scene* scene, const char* szImageFileName, const size_t width, const size_t height, size_t bounces, const float weight, const float epsilon, const bool shadows, const bool back, const size_t samples, const size_t stratified, const Filter* filter);

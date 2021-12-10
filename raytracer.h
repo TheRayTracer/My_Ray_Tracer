@@ -6,7 +6,6 @@
 #include "math.h"
 #include "hit.h"
 #include "ray.h"
-#include "stats.h"
 
 #define EPSILON  1e-4f
 

@@ -195,7 +195,7 @@ private:
       return samples[GetIndex(i, j, n)];
    }
 
-   int GetIndex(size_t i, size_t j, size_t n) const
+   size_t GetIndex(size_t i, size_t j, size_t n) const
    {
       return i * height * num_samples + j * num_samples + n;
    }

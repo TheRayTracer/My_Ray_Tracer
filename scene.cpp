@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include "scene.h"
-#include "math.h"
 #include "camera.h"
 #include "light.h"
 #include "material.h"
