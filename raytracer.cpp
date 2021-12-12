@@ -91,7 +91,7 @@ color3f RayTracer::TraceRay(const Ray& ray, size_t bounce, float weight, float i
 
          if (bounce < 1 && fa > 0.0f)
          {
-            const vector3f d = MirrorDirection(hit, ray);
+            const vector3f d = RayTracer::MirrorDirection(hit, ray);
             vector3f vw, vu, vv;
 
             vector3f::ConstructBasisFromSingleVector(d, vw, vu, vv);
@@ -114,7 +114,7 @@ color3f RayTracer::TraceRay(const Ray& ray, size_t bounce, float weight, float i
          }
          else
          {
-            vector3f d = MirrorDirection(hit, ray);
+            vector3f d = RayTracer::MirrorDirection(hit, ray);
 
             Stats::IncrementNonShadowRays();
             const Ray ray2(hit.GetIntersectionPoint(), d.Normalize());
@@ -134,7 +134,7 @@ color3f RayTracer::TraceRay(const Ray& ray, size_t bounce, float weight, float i
          }
 
          vector3f td;
-         if (TransmittedDirection(hit, ray, index_of_refraction, index, td) != false)
+         if (RayTracer::TransmittedDirection(hit, ray, index_of_refraction, index, td) != false)
          {
             Stats::IncrementNonShadowRays();
             const Ray ray2(hit.GetIntersectionPoint(), td.Normalize());

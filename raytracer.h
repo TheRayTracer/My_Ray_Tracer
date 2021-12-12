@@ -22,14 +22,14 @@ public:
 
    color3f TraceRay(const Ray& ray, size_t bounce, float weight, float index_of_refraction) const;
 
-   vector3f MirrorDirection(const Hit& hit, const Ray& ray) const
+   static vector3f MirrorDirection(const Hit& hit, const Ray& ray)
    {
       const vector3f incoming = ray.GetDirection();
 
       return incoming - (2.0f * vector3f::Dot(hit.GetNormal(), incoming) * hit.GetNormal());
    }
 
-   bool TransmittedDirection(const Hit& hit, const Ray& ray, float index_i, float index_t, vector3f& t) const
+   static bool TransmittedDirection(const Hit& hit, const Ray& ray, float index_i, float index_t, vector3f& t)
    {
       bool result = false;
 
