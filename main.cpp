@@ -4,7 +4,7 @@
    A ray tracing framework supporting shadows, reflections, refractions
    and distribution effects.
 
-   The ray traced scene, is committed to an image file.
+   The ray traced scene is committed to an image file.
 
    Simon Flannery, Advanced Graphics, La Trobe University, 2005.
    Simon Flannery, 2006 - 2022.
