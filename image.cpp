@@ -14,9 +14,9 @@
 Image::Image(size_t width, size_t height) : w(width), h(height), data(NULL)
 {
    size_t size = w * h;
-   data = new vector3f[size];
+   data = new color3f[size];
 
-   vector3f white(1.0f, 1.0f, 1.0f);
+   color3f white(1.0f, 1.0f, 1.0f);
 
    for (size_t i = 0; i < size; ++i)
    {
