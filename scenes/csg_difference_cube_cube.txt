@@ -17,7 +17,7 @@ Lights {
 Materials {
    numMaterials 2
 
-   PhongMaterial {
+   Phong {
       diffuseColor 0.1 0.1 0.8
 	   specularColor 1 1 1
 	   exponent 50
@@ -26,7 +26,7 @@ Materials {
 	   indexOfRefraction 1
    }
 
-   PhongMaterial {
+   Phong {
       diffuseColor 0.9 0.1 0.1
 	   specularColor 1 1 1
 	   exponent 50

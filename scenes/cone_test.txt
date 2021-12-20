@@ -22,19 +22,19 @@ Background {
 Materials {
     numMaterials 4
 
-    PhongMaterial {
+    Phong {
         diffuseColor 1 0 0
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 1 0 1
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 1 1 0
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0 1 0
     }
 }

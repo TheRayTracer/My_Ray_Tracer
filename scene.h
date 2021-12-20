@@ -65,7 +65,7 @@ private:
    Light*        ParseDirectionalLight();
    Light*        ParsePointLight();
    Light*        ParseSoftLight();
-   PhongMaterial*  ParsePhongMaterial();
+   PhongMaterial*  ParsePhong();
    NoiseMaterial*  ParseNoise(size_t count);
    MarbleMaterial* ParseMarble(size_t count);
    WoodMaterial*   ParseWood(size_t count);

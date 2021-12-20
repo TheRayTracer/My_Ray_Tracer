@@ -28,7 +28,7 @@ Background {
 Materials {
     numMaterials 8
 
-    PhongMaterial {	
+    Phong {	
         diffuseColor 0.1 0.1 0.1
 	specularColor 1 1 1 
 	exponent 64
@@ -36,11 +36,11 @@ Materials {
 	transparentColor 0 0 0
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.6 0.49 0.3
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.79 0.66 0.44
     }
 
@@ -57,11 +57,11 @@ Materials {
 	amplitude 2
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.4 0.33 0.22
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.69 0.56 0.34
     }
 
@@ -92,7 +92,7 @@ Group {
 
     MaterialIndex 0
     TriangleMesh {
-        obj_file teapot.obj
+        file teapot.obj
     }
 
     MaterialIndex 7

@@ -16,7 +16,7 @@ Lights {
 
 Materials {
     numMaterials 4
-    PhongMaterial {
+    Phong {
         diffuseColor 0.1 0.1 0.1
 	specularColor 1 1 1
 	exponent 50
@@ -26,7 +26,7 @@ Materials {
         blur 0.25
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 1 0.1 0.1
 	specularColor 1 1 1
 	exponent 50
@@ -36,7 +36,7 @@ Materials {
         blur 0.25
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.1 1 0.1
 	specularColor 1 1 1
 	exponent 50
@@ -46,7 +46,7 @@ Materials {
         blur 0.25
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.1 0.1 1
 	specularColor 1 1 1
 	exponent 50

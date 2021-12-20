@@ -22,13 +22,13 @@ Background {
 Materials {
     numMaterials 5
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.5 0.2 0.1
         specularColor 0.3 0.1 0.1
 	exponent 16
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.7 0.5 0.5
         specularColor 0.3 0.1 0.1
 	exponent 16
@@ -42,7 +42,7 @@ Materials {
 	amplitude 4
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.1 0.1 0.1
 	specularColor 1 1 1
 	exponent 16
@@ -50,7 +50,7 @@ Materials {
         blur 0.25
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.1 0.1 0.1
 	specularColor 1 1 1
 	exponent 16
@@ -69,7 +69,7 @@ Group {
       Translate 0 -475 0
       YRotate -45
       TriangleMesh {
-         obj_file knight.obj
+         file knight.obj
       }
     }
 

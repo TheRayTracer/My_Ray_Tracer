@@ -27,12 +27,12 @@ Background {
 Materials {
     numMaterials 6
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.5 0.2 0.1
 	specularColor 0 0 0
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 1 0.8 0.8
 	specularColor 0 0 0
     }
@@ -48,12 +48,12 @@ Materials {
 	amplitude 4
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 1 1 1
 	specularColor 0 0 0
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0 0 0
 	specularColor 0 0 0
     }
@@ -73,7 +73,7 @@ Group {
 
     MaterialIndex 2
     TriangleMesh {
-        obj_file vase.obj
+        file vase.obj
     }
 
     MaterialIndex 3

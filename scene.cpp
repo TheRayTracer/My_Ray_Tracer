@@ -252,6 +252,8 @@ void Scene::ParseBackground()
 
    ambient_light = ReadVector3f();
 
+   GetToken(token); assert(strcmp(token, "}") == 0);
+
    return;
 }
 
@@ -372,9 +374,9 @@ void Scene::ParseMaterials()
    {
       GetToken(token); 
 
-      if (strcmp(token, "PhongMaterial") == 0)
+      if (strcmp(token, "Phong") == 0)
       {
-         material[count] = ParsePhongMaterial();
+         material[count] = ParsePhong();
       }
       else if (strcmp(token, "Noise") == 0)
       {
@@ -401,7 +403,7 @@ void Scene::ParseMaterials()
    return;
 }  
 
-PhongMaterial* Scene::ParsePhongMaterial()
+PhongMaterial* Scene::ParsePhong()
 {
    char token[MAX_PARSER_TOKEN_LENGTH];
 
@@ -410,7 +412,7 @@ PhongMaterial* Scene::ParsePhongMaterial()
    float exponent = 1.0f;
    color3f reflective_color(0.0f, 0.0f, 0.0f);
    color3f transparent_color(0.0f, 0.0f, 0.0f);
-   float index_of_refraction = 1;
+   float index_of_refraction = 1.0f;
    float blur = 0.0f;
 
    GetToken(token); assert(strcmp(token, "{") == 0);
@@ -1196,7 +1198,7 @@ Group* Scene::ParseTriangleMesh()
    char token[MAX_PARSER_TOKEN_LENGTH];
    char szFileName[MAX_PARSER_TOKEN_LENGTH];
    GetToken(token); assert(strcmp(token, "{") == 0);
-   GetToken(token); assert(strcmp(token, "obj_file") == 0);
+   GetToken(token); assert(strcmp(token, "file") == 0);
    GetToken(szFileName); 
    GetToken(token); assert(strcmp(token, "}") == 0);
 

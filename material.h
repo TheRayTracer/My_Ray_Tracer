@@ -49,10 +49,7 @@ protected:
    bool shade_back;
 
 private:
-   friend class Checkerboard;
    friend class NoiseMaterial;
-   friend class MarbleMaterial;
-   friend class WoodMaterial;
 };
 
 class PhongMaterial : public Material

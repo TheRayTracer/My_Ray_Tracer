@@ -36,12 +36,12 @@ public:
       vector3f normal = hit.GetNormal();
       const vector3f incoming = ray.GetDirection();
 
-      if (vector3f::Dot(normal, incoming) > 0.0f)
+      const float dn = vector3f::Dot(normal, incoming);
+
+      if (dn > 0.0f)
       {
          normal.Negate();
       }
-
-      const float dn = vector3f::Dot(normal, incoming);
 
       const vector3f a = (index_i * (incoming - (normal * dn))) / index_t;
       const float    b = (1.0f - ((index_i * index_i) * (1.0f - (dn * dn))) / (index_t * index_t));

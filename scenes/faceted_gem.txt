@@ -36,7 +36,7 @@ Background {
 Materials {
     numMaterials 2
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.25 0.25 0.25
 	specularColor 0.25 0.25 0.25
 	exponent 32
@@ -45,7 +45,7 @@ Materials {
 	indexOfRefraction 2.413
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 1 1 1
     }
 }
@@ -57,7 +57,7 @@ Group {
     Transform {
         XRotate -90
         TriangleMesh {
-            obj_file diamond.obj
+            file diamond.obj
         }
     }
 

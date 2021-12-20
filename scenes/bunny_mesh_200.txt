@@ -22,7 +22,7 @@ Background {
 
 Materials {
     numMaterials 1
-    PhongMaterial {	
+    Phong {	
         diffuseColor 1 1 1
 	specularColor 1 1 1 
 	exponent 96
@@ -34,7 +34,7 @@ Group {
 
     MaterialIndex 0
     TriangleMesh {
-        obj_file bunny_200.obj
+        file bunny_200.obj
     }
 
     Plane {

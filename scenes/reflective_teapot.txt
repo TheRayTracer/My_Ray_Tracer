@@ -22,7 +22,7 @@ Background {
 Materials {
    numMaterials 7
 
-   PhongMaterial {
+   Phong {
       diffuseColor 0.1 0.1 0.1
       specularColor 1 1 1
       exponent 64
@@ -31,7 +31,7 @@ Materials {
       indexOfRefraction 1
    }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 1 0.1 0.1
 	specularColor 1 1 1
 	exponent 50
@@ -40,7 +40,7 @@ Materials {
 	indexOfRefraction 1
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.1 1 0.1
 	specularColor 1 1 1
 	exponent 50
@@ -49,7 +49,7 @@ Materials {
 	indexOfRefraction 1
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 0.1 0.1 1
 	specularColor 1 1 1
 	exponent 50
@@ -58,7 +58,7 @@ Materials {
 	indexOfRefraction 1
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 1 0.1 1
 	specularColor 1 1 1
 	exponent 50
@@ -67,7 +67,7 @@ Materials {
 	indexOfRefraction 1
     }
 
-    PhongMaterial {
+    Phong {
         diffuseColor 1 1 0.1
 	specularColor 1 1 1
 	exponent 50
@@ -76,7 +76,7 @@ Materials {
 	indexOfRefraction 1
     }
 
-   PhongMaterial {
+   Phong {
       diffuseColor 0.5 0.5 0.8
    }
 }
@@ -88,7 +88,7 @@ Group {
    Transform {
       Translate  0 -1 0
       TriangleMesh {
-         obj_file teapot.obj
+         file teapot.obj
       }
    }
 
