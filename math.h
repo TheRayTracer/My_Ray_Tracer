@@ -17,6 +17,11 @@ inline float random_float() // [0, 1]
    return rand() / (RAND_MAX + 1.0f);
 }
 
+inline float random_float(float mi, float ma) // [mi, ma)
+{
+   return mi + (ma - mi) * random_float();
+}
+
 struct vector4f
 {
    float m[4];
@@ -75,6 +80,11 @@ struct vector3f
       return (float) sqrt(m[x] * m[x] + m[y] * m[y] + m[z] * m[z]);
    }
 
+   float LengthSq() const
+   {
+      return m[x] * m[x] + m[y] * m[y] + m[z] * m[z];
+   }
+
    vector3f& Negate()
    {
       m[x] = -m[x];
@@ -91,6 +101,13 @@ struct vector3f
       m[z] = (float) fabs(m[z]);
 
       return *this;
+   }
+
+   bool IsNearZero() const
+   {
+      const auto s = 1e-8;
+      // Return true if the vector is close to zero in all dimensions.
+      return (fabs(m[x]) < s) && (fabs(m[y]) < s) && (fabs(m[z]) < s);
    }
 
    void Set(float a = 0.0f, float b = 0.0f, float c = 0.0f)
@@ -171,7 +188,7 @@ struct vector3f
       return (float) sqrt((a[x] - b[x]) * (a[x] - b[x]) + (a[y] - b[y]) * (a[y] - b[y]) + (a[z] - b[z]) * (a[z] - b[z]));
    }
 
-   static float DistanceSqrt(const vector3f a, const vector3f b)
+   static float DistanceSq(const vector3f a, const vector3f b)
    {
       return (a[x] - b[x]) * (a[x] - b[x]) + (a[y] - b[y]) * (a[y] - b[y]) + (a[z] - b[z]) * (a[z] - b[z]);
    }
@@ -192,16 +209,28 @@ struct vector3f
       return a[x] * b[x] + a[y] * b[y] + a[z] * b[z];
    }
 
-   static vector3f random_vector_from_unit_sphere()
+   static vector3f RandomInHemisphere(const vector3f& normal)
+   {
+      vector3f v = RandomVectorOnUnitSphere();
+
+      if (vector3f::Dot(v, normal) <= 0.0f) // Is not in the same hemisphere as the normal.
+      {
+         return v.Negate();
+      }
+
+      return v;
+   }
+
+   static vector3f RandomVectorOnUnitSphere()
    {
       vector3f p;
 
       do
       {
          p = 2.0f * vector3f(random_float(), random_float(), random_float()) - vector3f(1.0f, 1.0f, 1.0f);
-      } while ((p[x] * p[x] + p[y] * p[y] + p[z] * p[z]) >= 1.0f);
+      } while (p.LengthSq() >= 1.0f);
 
-      return p;
+      return p.Normalize();
    }
 
    static void ConstructBasisFromSingleVector(const vector3f& a, vector3f& w, vector3f& u, vector3f& v)

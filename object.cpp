@@ -15,7 +15,7 @@ bool Sphere::Intersect(const Ray& ray, Hit& h, float tmin) const
 
    bool result = false;
 
-   vector3f o(ray.GetOrigin() - point);
+   const vector3f o(ray.GetOrigin() - point);
 
 // float a = vector3f::Dot(ray.GetDirection(), ray.GetDirection()); /* Always 1! */
    float b = vector3f::Dot(o, ray.GetDirection());
@@ -56,7 +56,7 @@ bool Sphere::Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const
 
    bool result = false;
 
-   vector3f o(ray.GetOrigin() - point);
+   const vector3f o(ray.GetOrigin() - point);
 
 // float a = vector3f::Dot(ray.GetDirection(), ray.GetDirection()); /* Always 1! */
    float b = vector3f::Dot(o, ray.GetDirection());
@@ -108,9 +108,9 @@ bool MotionSphere::Intersect(const Ray& ray, Hit& h, float tmin) const
 
    float t = rand() / (float) RAND_MAX;
 
-   vector3f p = point + velocity * t;
+   const vector3f p = point + velocity * t;
 
-   vector3f o(ray.GetOrigin() - p);
+   const vector3f o(ray.GetOrigin() - p);
 
 // float a = vector3f::Dot(ray.GetDirection(), ray.GetDirection()); /* Always 1! */
    float b = vector3f::Dot(ray.GetDirection(), o);
@@ -240,7 +240,7 @@ bool Cone::Intersect(const Ray& ray, Hit& h, float tmin) const
 
    bool result = false;
 
-   vector3f co = ray.GetOrigin() - v;
+   const vector3f co = ray.GetOrigin() - v;
 
    float a = vector3f::Dot(ray.GetDirection(), axis) * vector3f::Dot(ray.GetDirection(), axis) - cos2_angle_sq;
    float b = 2.0f * (vector3f::Dot(ray.GetDirection(), axis) * vector3f::Dot(co, axis) - vector3f::Dot(ray.GetDirection(), co) * cos2_angle_sq);
@@ -256,7 +256,7 @@ bool Cone::Intersect(const Ray& ray, Hit& h, float tmin) const
       float t = t1;
       if (t2 < t1) t = t2;
 
-      vector3f cp = ray.GetOrigin() + t * ray.GetDirection() - v;
+      const vector3f cp = ray.GetOrigin() + t * ray.GetDirection() - v;
       float q = vector3f::Dot(cp, axis);
 
       if (q < 0.0f || q > height)
@@ -923,8 +923,8 @@ bool Transform::Intersect(const Ray& ray, Hit& h, float tmin) const
    vector3f direction = ray.GetDirection();
 
 /* Remember, points and directions transform differently! */
-   matrix.Inverse(1e-4f).Transform(origin);
-   matrix.Inverse(1e-4f).TransformDirection(direction);
+   matrix.Inverse().Transform(origin);
+   matrix.Inverse().TransformDirection(direction);
 
    const float scale = direction.Length();
 
@@ -938,7 +938,7 @@ bool Transform::Intersect(const Ray& ray, Hit& h, float tmin) const
    {
       vector3f normal = h.GetNormal();
       
-      matrix.Inverse(1e-4f).Transpose().TransformDirection(normal);
+      matrix.Inverse().Transpose().TransformDirection(normal);
       h.Set(h.GetT() / scale, h.GetMaterial(), normal, ray);
    }
    else
