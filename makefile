@@ -1,14 +1,11 @@
 LIBS = -Wall
 CC   = g++
 
-my_ray_tracer: main.o math.o image.o scene.o object.o perlin.o raytracer.o stats.o
-	$(CC) $(LIBS) -o my_ray_tracer main.o math.o image.o scene.o object.o perlin.o raytracer.o stats.o
+my_ray_tracer: main.o image.o scene.o object.o perlin.o raytracer.o stats.o
+	$(CC) $(LIBS) -o my_ray_tracer main.o image.o scene.o object.o perlin.o raytracer.o stats.o
 
 main.o: main.cpp
 	$(CC) -c main.cpp
-
-math.o: math.cpp
-	$(CC) -c math.cpp
 
 image.o: image.cpp
 	$(CC) -c image.cpp
