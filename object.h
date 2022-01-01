@@ -77,35 +77,36 @@ private:
 class Triangle : public Object
 {
 public:
-   Triangle(const vector3f& a, const vector3f& b, const vector3f& c, Material* m);
+   Triangle(const point3f& a, const point3f& b, const point3f& c, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
 
 protected:
 private:
-   vector3f va, vb, vc, ea, eb;
+   point3f va, vb, vc;
    vector3f normal;
 };
 
 class Cone : public Object
 {
 public:
-   Cone(const vector3f& tip, const vector3f& ax, const float cos2a, const float h, Material* m);
+   Cone(const point3f& tip, const vector3f& ax, const float cos2a, const float h, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
 
 protected:
 private:
-   vector3f v, axis;
+   point3f v;
+   vector3f axis;
    float cos2_angle_sq, height;
 };
 
 class XYRectangle : public Object
 {
 public:
-   XYRectangle(const point2f low, const point2f up, const float _k, Material* m);
+   XYRectangle(const point2f low, const point2f up, const float _k, const float n, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
@@ -120,7 +121,7 @@ private:
 class XZRectangle : public Object
 {
 public:
-   XZRectangle(const point2f low, const point2f up, const float _k, Material* m);
+   XZRectangle(const point2f low, const point2f up, const float _k, const float n, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
@@ -135,7 +136,7 @@ private:
 class YZRectangle : public Object
 {
 public:
-   YZRectangle(const point2f low, const point2f up, const float _k, Material* m);
+   YZRectangle(const point2f low, const point2f up, const float _k, const float n, Material* m);
 
    virtual bool Intersect(const Ray& ray, Hit& h, float tmin) const;
    virtual bool ShadowIntersect(const Ray& ray, Hit& h, float tmin) const;
