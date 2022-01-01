@@ -1115,7 +1115,7 @@ Cone* Scene::ParseCone()
 
    GetToken(token); assert(strcmp(token, "{") == 0);
    GetToken(token); assert(strcmp(token, "tip") == 0);
-   vector3f v = ReadVector3f();
+   point3f v = ReadVector3f();
 
    GetToken(token); assert(strcmp(token, "axis") == 0);
    vector3f axis = ReadVector3f();
@@ -1147,10 +1147,13 @@ XYRectangle* Scene::ParseXYRectangle()
    GetToken(token); assert(strcmp(token, "k") == 0);
    float k = ReadFloat();
 
+   GetToken(token); assert(strcmp(token, "normal") == 0);
+   float n = ReadFloat();
+
    GetToken(token); assert(strcmp(token, "}") == 0);
    assert(current_material != NULL);
 
-   return new XYRectangle(v0, v1, k, current_material);
+   return new XYRectangle(v0, v1, k, n, current_material);
 }
 
 XZRectangle* Scene::ParseXZRectangle()
@@ -1167,10 +1170,13 @@ XZRectangle* Scene::ParseXZRectangle()
    GetToken(token); assert(strcmp(token, "k") == 0);
    float k = ReadFloat();
 
+   GetToken(token); assert(strcmp(token, "normal") == 0);
+   float n = ReadFloat();
+
    GetToken(token); assert(strcmp(token, "}") == 0);
    assert(current_material != NULL);
 
-   return new XZRectangle(v0, v1, k, current_material);
+   return new XZRectangle(v0, v1, k, n, current_material);
 }
 
 YZRectangle* Scene::ParseYZRectangle()
@@ -1187,10 +1193,13 @@ YZRectangle* Scene::ParseYZRectangle()
    GetToken(token); assert(strcmp(token, "k") == 0);
    float k = ReadFloat();
 
+   GetToken(token); assert(strcmp(token, "normal") == 0);
+   float n = ReadFloat();
+
    GetToken(token); assert(strcmp(token, "}") == 0);
    assert(current_material != NULL);
 
-   return new YZRectangle(v0, v1, k, current_material);
+   return new YZRectangle(v0, v1, k, n, current_material);
 }
 
 Group* Scene::ParseTriangleMesh()

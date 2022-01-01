@@ -173,12 +173,13 @@ bool Plane::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-Triangle::Triangle(const vector3f& a, const vector3f& b, const vector3f& c, Material* m) : va(a), vb(b), vc(c)
+Triangle::Triangle(const point3f& a, const point3f& b, const point3f& c, Material* m) : va(a), vb(b), vc(c)
 {
    material = m;
 
-   ea = va - vc;
-   eb = vb - vc;
+   vector3f ea = va - vc;
+   vector3f eb = vb - vc;
+
    normal = vector3f::Cross(ea, eb);
    normal.Normalize();
 }
@@ -227,7 +228,7 @@ bool Triangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-Cone::Cone(const vector3f& tip, const vector3f& ax, const float cos2a, const float h, Material* m) : v(tip), axis(ax), cos2_angle_sq(cos2a), height(h)
+Cone::Cone(const point3f& tip, const vector3f& ax, const float cos2a, const float h, Material* m) : v(tip), axis(ax), cos2_angle_sq(cos2a), height(h)
 {
    material = m;
 
@@ -284,7 +285,7 @@ bool Cone::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-XYRectangle::XYRectangle(const point2f low, const point2f up, const float _k, Material* m)
+XYRectangle::XYRectangle(const point2f low, const point2f up, const float _k, const float n, Material* m)
 {
    material = m;
 
@@ -293,7 +294,8 @@ XYRectangle::XYRectangle(const point2f low, const point2f up, const float _k, Ma
 
    k = _k;
 
-   normal = vector3f(0.0f, 0.0f, 1.0f);
+   normal = vector3f(0.0f, 0.0f, n);
+   normal.Normalize();
 }
 
 bool XYRectangle::Intersect(const Ray& ray, Hit& h, float tmin) const
@@ -325,7 +327,7 @@ bool XYRectangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-XZRectangle::XZRectangle(const point2f low, const point2f up, const float _k, Material* m)
+XZRectangle::XZRectangle(const point2f low, const point2f up, const float _k, const float n, Material* m)
 {
    material = m;
 
@@ -334,7 +336,8 @@ XZRectangle::XZRectangle(const point2f low, const point2f up, const float _k, Ma
 
    k = _k;
 
-   normal = vector3f(0.0f, 1.0f, 0.0f);
+   normal = vector3f(0.0f, n, 0.0f);
+   normal.Normalize();
 }
 
 bool XZRectangle::Intersect(const Ray& ray, Hit& h, float tmin) const
@@ -366,7 +369,7 @@ bool XZRectangle::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-YZRectangle::YZRectangle(const point2f low, const point2f up, const float _k, Material* m)
+YZRectangle::YZRectangle(const point2f low, const point2f up, const float _k, const float n, Material* m)
 {
    material = m;
 
@@ -375,7 +378,8 @@ YZRectangle::YZRectangle(const point2f low, const point2f up, const float _k, Ma
 
    k = _k;
 
-   normal = vector3f(1.0f, 0.0f, 0.0f);
+   normal = vector3f(n, 0.0f, 0.0f);
+   normal.Normalize();
 }
 
 bool YZRectangle::Intersect(const Ray& ray, Hit& h, float tmin) const
