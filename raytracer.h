@@ -43,13 +43,15 @@ public:
 
       const float dn = vector3f::Dot(normal, incoming);
 
-      const vector3f a = (index_i * (incoming - (normal * dn))) / index_t;
-      const float    b = (1.0f - ((index_i * index_i) * (1.0f - (dn * dn))) / (index_t * index_t));
+      const float b = (1.0f - ((index_i * index_i) * (1.0f - (dn * dn))) / (index_t * index_t));
 
       if (b > 0.0f)
       {
-         result = true;
+         const vector3f a = (index_i * (incoming - (normal * dn))) / index_t;
+
          t = a - normal * (float) sqrt(b);
+
+         result = true;
       }
 
       return result;

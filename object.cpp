@@ -1,7 +1,6 @@
 /* File: object.cpp; Mode: C++; Tab-width: 3; Author: Simon Flannery;         */
 
 #include <stdlib.h>
-#include <float.h>
 #include "object.h"
 #include "ray.h"
 #include "hit.h"
@@ -34,7 +33,7 @@ bool Sphere::Intersect(const Ray& ray, Hit& h, float tmin) const
          vector3f n = ray.PointAtParameter(t1) - point;
          
       // h.intersection_point = ray.GetOrigin() + t1 * ray.GetDirection() - point;
-         h.Set(t1, material, n, ray);
+         h.Set(t1, material, n.Normalize(), ray);
          result = true;
       }
       else if (t2 > tmin && t2 < h.GetT())
@@ -42,7 +41,7 @@ bool Sphere::Intersect(const Ray& ray, Hit& h, float tmin) const
          vector3f n = ray.PointAtParameter(t2) - point;
 
       // h.intersection_point = ray.GetOrigin() + t2 * ray.GetDirection() - point;
-         h.Set(t2, material, n, ray);
+         h.Set(t2, material, n.Normalize(), ray);
          result = true;
       }
    }
@@ -75,8 +74,8 @@ bool Sphere::Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const
          vector3f n1 = ray.PointAtParameter(t1) - point;
          vector3f n2 = ray.PointAtParameter(t2) - point;
 
-         h1.Set(t1, material, n1, ray);
-         h2.Set(t2, material, n2, ray);
+         h1.Set(t1, material, n1.Normalize(), ray);
+         h2.Set(t2, material, n2.Normalize(), ray);
 
          result = true;
       }
@@ -85,8 +84,8 @@ bool Sphere::Intersect(const Ray& ray, Hit& h1, Hit& h2, float tmin) const
          vector3f n1 = ray.PointAtParameter(t1) - point;
          vector3f n2 = ray.PointAtParameter(t2) - point;
 
-         h1.Set(t2, material, n2, ray);
-         h2.Set(t1, material, n1, ray);
+         h1.Set(t2, material, n2.Normalize(), ray);
+         h2.Set(t1, material, n1.Normalize(), ray);
 
          result = true;
       }
@@ -129,7 +128,7 @@ bool MotionSphere::Intersect(const Ray& ray, Hit& h, float tmin) const
          vector3f n = ray.PointAtParameter(t1) - p;
          
       // h.intersection_point = ray.GetOrigin() + t1 * ray.GetDirection() - point;
-         h.Set(t1, material, n, ray);
+         h.Set(t1, material, n.Normalize(), ray);
          result = true;
       }
       else if (t2 > tmin && t2 < h.GetT())
@@ -137,7 +136,7 @@ bool MotionSphere::Intersect(const Ray& ray, Hit& h, float tmin) const
          vector3f n = ray.PointAtParameter(t2) - p;
 
       // h.intersection_point = ray.GetOrigin() + t2 * ray.GetDirection() - point;
-         h.Set(t2, material, n, ray);
+         h.Set(t2, material, n.Normalize(), ray);
          result = true;
       }
    }
