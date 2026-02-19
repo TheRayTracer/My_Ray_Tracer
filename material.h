@@ -77,7 +77,6 @@ public:
       refraction_index  = refraction;
 
       exponent = e;
-      refraction_index = refraction;
       blur = 0.0f;
 
       shade_back = false;
@@ -93,7 +92,6 @@ public:
       refraction_index  = refraction;
 
       exponent = e;
-      refraction_index = refraction;
       blur = blurriness;
 
       shade_back = false;

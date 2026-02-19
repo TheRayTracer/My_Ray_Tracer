@@ -219,6 +219,8 @@ public:
 protected:
 private:
    Matrix matrix;
+   Matrix inverse;
+   Matrix inverse_transpose;
    Object* object;
 };
 

@@ -27,7 +27,7 @@ Image::Image(size_t width, size_t height) : w(width), h(height), data(NULL)
 Image::Image(const Image& i)
 {
    w = i.w;
-   h = i.w;
+   h = i.h;
 
    size_t size = w * h;
    data = new vector3f[size];

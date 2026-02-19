@@ -127,11 +127,7 @@ color3f RayTracer::TraceRay(const Ray& ray, size_t bounce, float weight, float i
 
       if (transparent_color > color3f(0.0f, 0.0f, 0.0f))
       {
-         float index = 1.0f;
-         if (bounce == 0)
-         {
-            index = hit.GetMaterial()->GetRefractionIndex(hit.GetIntersectionPoint());
-         }
+         float index = hit.GetMaterial()->GetRefractionIndex(hit.GetIntersectionPoint());
 
          vector3f td;
          if (RayTracer::TransmittedDirection(hit, ray, index_of_refraction, index, td) != false)

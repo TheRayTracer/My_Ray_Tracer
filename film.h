@@ -161,7 +161,12 @@ public:
          color = color + (weight * s.GetColor());
       }
 
-      return color / (float) weight_sum;
+      if (weight_sum > 0)
+      {
+         color = color / (float) weight_sum;
+      }
+
+      return color;
    }
 
    void Output(const char* szImageFileName, const Filter* filter)

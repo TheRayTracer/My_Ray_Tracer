@@ -154,7 +154,7 @@ void Voodoo(Scene* scene, const char* szImageFileName, const size_t width, const
       {
          for (size_t j = 0; j < height; ++j)
          {
-            float pc = (float) (i * width + j);
+            float pc = (float) (i * height + j);
             int percent = (int) (100.0f * (pc / num_pixels));
 
             if (percent != last_percent)

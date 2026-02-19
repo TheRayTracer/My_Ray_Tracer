@@ -15,7 +15,7 @@
 #include "material.h"
 #include "object.h"
 
-#define DegreesToRadians(x) ((3.1415926535897932384626433832795f * x) / 180.0f)
+#define DegreesToRadians(x) ((3.1415926535897932384626433832795f * (x)) / 180.0f)
 
 Scene::Scene(const char* szFileName)
 {
@@ -944,7 +944,7 @@ Group* Scene::ParseGroup()
       if (strcmp(token, "MaterialIndex") == 0)
       {
          size_t index = ReadInt();
-         assert(index >= 0 && index <= GetNumMaterials());
+         assert(index < GetNumMaterials());
          current_material = GetMaterial(index);
       }
       else
@@ -994,7 +994,7 @@ CSGPair* Scene::ParseCSGPair()
       else if (strcmp(token, "MaterialIndex") == 0)
       {
          size_t index = ReadInt();
-         assert(index <= GetNumMaterials());
+         assert(index < GetNumMaterials());
          current_material = GetMaterial(index);
       }
       else if (strcmp(token, "Cube") == 0)

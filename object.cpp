@@ -883,15 +883,23 @@ bool CSGPair::Intersect(const Ray& ray, Hit& h, float tmin) const
             }
             else if ((h1_min.GetT() < h2_min.GetT()) && (h1_max.GetT() > h2_min.GetT()))
             {
-               if (h2_max.GetT() < h.GetT())
+               if (h2_min.GetT() < h.GetT())
                {
                   h.Set(h2_min.GetT(), h2_min.GetMaterial(), h2_min.GetNormal(), ray);
+               }
+               else
+               {
+                  result = false;
                }
             }
             else
             {
                result = false;
             }
+         }
+         else
+         {
+            result = false;
          }
       }
    }
@@ -918,7 +926,7 @@ bool CSGPair::ShadowIntersect(const Ray& ray, Hit& h, float tmin) const
    return Intersect(ray, h, tmin);
 }
 
-Transform::Transform(const Matrix& m, Object* o) : matrix(m), object(o) { }
+Transform::Transform(const Matrix& m, Object* o) : matrix(m), inverse(m.Inverse()), inverse_transpose(m.Inverse().Transpose()), object(o) { }
 
 bool Transform::Intersect(const Ray& ray, Hit& h, float tmin) const
 {
@@ -926,8 +934,8 @@ bool Transform::Intersect(const Ray& ray, Hit& h, float tmin) const
    vector3f direction = ray.GetDirection();
 
 /* Remember, points and directions transform differently! */
-   matrix.Inverse().Transform(origin);
-   matrix.Inverse().TransformDirection(direction);
+   inverse.Transform(origin);
+   inverse.TransformDirection(direction);
 
    const float scale = direction.Length();
 
@@ -941,7 +949,7 @@ bool Transform::Intersect(const Ray& ray, Hit& h, float tmin) const
    {
       vector3f normal = h.GetNormal();
       
-      matrix.Inverse().Transpose().TransformDirection(normal);
+      inverse_transpose.TransformDirection(normal);
       h.Set(h.GetT() / scale, h.GetMaterial(), normal, ray);
    }
    else
